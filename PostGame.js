@@ -904,7 +904,7 @@ rating_calculator: function()
     }
     var ratio = weed.totalCannabis/totalGarbage_temp;
     
-    if(weed.totalCannabis > 40)
+    if(weed.totalCannabis > 40 )
     {
         this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
@@ -915,7 +915,7 @@ rating_calculator: function()
            
        
     }
-    if(weed.totalCannabis > 30)
+    if(weed.totalCannabis > 30 && weed.totalCannabis <= 40)
     {
         this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
@@ -923,25 +923,28 @@ rating_calculator: function()
         this.time.events.repeat(880, 1,this.rating_selector, this, 4);
         this.time.events.repeat(1080, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis > 20)
+    if(weed.totalCannabis > 20 && weed.totalCannabis <= 30)
     {
         this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
         this.time.events.repeat(660, 1,this.rating_selector, this, 3);
         this.time.events.repeat(860, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis > 10)
+    if(weed.totalCannabis > 10 && weed.totalCannabis <= 20)
     {
         this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
         this.time.events.repeat(640, 1,this.render_buttons, this);    
     }
-    if(weed.totalCannabis < 10)
+    if(weed.totalCannabis <= 10 && weed.totalCannabis > 0)
     {
         this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(420, 1,this.render_buttons, this);
     }
-
+    if(weed.totalCannabis <= 0)
+    {
+        this.time.events.repeat(420, 1,this.render_buttons, this);
+    }
 
 },
 

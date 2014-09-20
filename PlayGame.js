@@ -41,6 +41,7 @@ weed.PlayGame = function(game)
     this.stopTimerActivated = false;
     this.doubleBonusSignal = false;
     this.speedOfPowerUpSprites = 1200;
+    this.callRenderGameOverScreenOnce = 0;
 };
 
 
@@ -71,7 +72,7 @@ weed.PlayGame.prototype = {
     create: function()
     {
         //this.secondsElapsed= 60;
-        
+        this.input.disabled = true;
         //Creates a new stand-alone Phaser.Timer object
         this.timer = this.time.create(false);               
         this.timer.loop(1000, this.updateSeconds, this);
@@ -82,7 +83,10 @@ weed.PlayGame.prototype = {
         
         this.renderminusFourPowerOnStartup();
         
-        this.physics.startSystem(Phaser.Physics.ARCADE);         
+        this.physics.startSystem(Phaser.Physics.ARCADE); 
+        
+        this.renderReadyScreen();    
+
         this.cannabisLeaves.enableBody = true;
         this.garbageLeaves.enableBody = true;
         this.minusFourLeaves.enableBody = true;
@@ -110,7 +114,8 @@ weed.PlayGame.prototype = {
        //console.log(doubleScoreSeconds);
        this.stopTimerCounter--;
        this.renderPowerUpsTimer--;
-       this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 2;
+       this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 1;
+       console.log(this.speedOfPowerUpSprites);
        this.updateTimerDependentCalls();
 
       
@@ -139,7 +144,7 @@ weed.PlayGame.prototype = {
         }
 
         if(this.doubleScoreSeconds <= 5 && this.doubleScoreSeconds >= 0 && this.doubleBonusSignal == true){
-            console.log(this.powerDoubleBonusAnimation.alpha);
+            
             this.add.tween(this.powerDoubleBonusAnimation).delay(800).to({alpha: 1}, 600, Phaser.Easing.Linear.None, true)
                                                             .to({alpha: 0.95}, 600, Phaser.Easing.Linear.None, true)
                                                                 .loop();
@@ -155,7 +160,7 @@ weed.PlayGame.prototype = {
         if(weed.totalCannabis == 5){
           this.renderHalfCannabis();
         }
-        if(weed.totalCannabis == 18 && this.counter_1_for_updateTimerDependentCalls == 0 ){
+        if(weed.totalCannabis >= 20 && this.counter_1_for_updateTimerDependentCalls == 0 ){
             this.renderDragableCannabisRealTime();
             this.renderDragableGarbageRealTime();
             this.counter_1_for_updateTimerDependentCalls ++;
@@ -180,7 +185,7 @@ weed.PlayGame.prototype = {
             this.renderFullGarbage();
         }
         var temp_random_for_power = this.rnd.integerInRange(3, 4);
-        console.log(temp_random_for_power);
+        
         if(this.renderPowerUpsTimer % temp_random_for_power == 0 && this.secondsElapsed != 0){
             this.selectPower();
         }
@@ -415,7 +420,7 @@ weed.PlayGame.prototype = {
             seed3.input.enableDrag();
             
         }
-        this.renderReadyScreen();               //--------------------starts the timer when everything is ready
+        //this.renderReadyScreen();               //--------------------starts the timer when everything is ready
         
     },
 
@@ -861,7 +866,6 @@ weed.PlayGame.prototype = {
 
 //----------------------------------------------READY SCREEN--------------------------------------------------------------------------//
     renderReadyScreen: function(){
-
         this.readyScreen = this.add.sprite(this.world.centerX, this.world.centerY+60, 'pause_backdrop');
         this.readyScreen.anchor.setTo(0.5, 0.5);
         this.readyScreen.scale.x = 1.87;
@@ -875,7 +879,7 @@ weed.PlayGame.prototype = {
             this.readyText.scale.y = 0.7;
             this.renderReadyScreenNumbers();
             
-        }, this);
+       }, this);
         
       },
     renderReadyScreenNumbers: function(){
@@ -891,7 +895,7 @@ weed.PlayGame.prototype = {
                 this.readyNumber.scale.y = 0;
                 this.add.tween(this.readyNumber.scale)
                                  .to({x: 0.7, y: 0.7 }, 500, Phaser.Easing.Linear.None, true);
-                                 
+                
                 t6 = this.add.tween(this.readyNumber)
                                     .to({alpha: 1}, 500, Phaser.Easing.Linear.None, true)
                                     .to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
@@ -947,6 +951,7 @@ weed.PlayGame.prototype = {
             this.add.tween(this.readyText).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
             this.add.tween(this.readyNumber).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
             this.renderPauseButton();
+            this.input.disabled = false;
             this.timer.start();
 
         },
@@ -1107,8 +1112,8 @@ weed.PlayGame.prototype = {
 //-----------------------------------------------------POWER-UPs---------------------------------------------------------//
     selectPower: function(){
 
-        this.powerSelector = this.rnd.integerInRange(1, 3);
-        //this.powerSelector = 3;
+        //this.powerSelector = this.rnd.integerInRange(1, 3);
+        this.powerSelector = 3;
     
         
         switch(this.powerSelector){
@@ -1143,7 +1148,7 @@ weed.PlayGame.prototype = {
             this.doubleScoreActivated = false;
             this.doubleBonusSignal = true;
         }
-        obj2.kill();
+        obj2.destroy();
 
     },
 
@@ -1151,7 +1156,7 @@ weed.PlayGame.prototype = {
     deactivateDoubleBonus: function(obj1, obj2){
         this.doubleBonusSignal = false;
         this.renderSadFaceRight();
-        obj2.kill();
+        obj2.destroy();
     },
 
 
@@ -1182,20 +1187,36 @@ weed.PlayGame.prototype = {
         this.doubleScoreLeaf.body.collideWorldBounds = true;
         this.world.bringToTop(this.doubleScoreLeaf);
         this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
-
+        
         /*this.doubleScoreLeaf.body.velocity.x = this.rnd.integerInRange(100, 300);
         this.doubleScoreLeaf.body.bounce.set(1);*/
         //this.doubleScoreLeaf.body.velocity.y = 50;
         //temp_timer = this.time.create(false);
         this.time.events.repeat(this.speedOfPowerUpSprites, 200, function(){
-
-            if(this.doubleScoreLeaf.input.isDragged == false){
-                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: this.doubleScoreLeaf.x + this.rnd.integerInRange(-100, 100), y: this.doubleScoreLeaf.y + this.rnd.integerInRange(-100, 100)}, 300, Phaser.Easing.Linear.None, true);
-                console.log('false');
+            var x_next, y_next;
+            if(this.doubleScoreLeaf != null){
+                x_next = this.doubleScoreLeaf.x + this.rnd.integerInRange(-100, 100);
+                y_next = this.doubleScoreLeaf.y + this.rnd.integerInRange(-100, 100);
             }
-            else if(this.doubleScoreLeaf.input.isDragged == true){
+            if(this.doubleScoreLeaf == null){
+                x_next = this.rnd.integerInRange(100, 200);
+                y_next = this.rnd.integerInRange(250, 350);
+                console.log('Location of stopTimerLeaf is null');
+            }
+            
+            if(y_next <= 125){
+                y_next = this.doubleScoreLeaf.y + 150;
+            }
+            if(this.doubleScoreLeaf.input.isDragged == false){
+                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
+               
+            }
+            if(this.doubleScoreLeaf.input.isDragged == true){
                 this.randomMovementDoubleScoreLeaf.stop();
-                console.log('true');
+                
+            }
+            if(this.doubleScoreLeaf == null){
+                console.log('doubleScoreLeaf is null');
             }
         }, this);
         
@@ -1241,7 +1262,7 @@ weed.PlayGame.prototype = {
 
     activateMinusFourSeconds: function(obj1, obj2){
         this.secondsElapsed = this.secondsElapsed - 4;
-        obj2.kill();
+        obj2.destroy();
         this.renderMinusFour();
         this.minusFourActivated = false;
         this.renderSadFaceLeft();
@@ -1252,7 +1273,7 @@ weed.PlayGame.prototype = {
 
     deactivateMinusFourSeconds: function(obj1, obj2){
         this.renderHappyFaceRight();
-        obj2.kill();
+        obj2.destroy();
     },
 
     renderMinusFour: function(){
@@ -1343,7 +1364,7 @@ weed.PlayGame.prototype = {
             this.renderHappyFaceLeft();
             this.renderStopTimerPowerActivated();
         }
-        obj2.kill();
+        obj2.destroy();
         
     },
 
@@ -1351,7 +1372,7 @@ weed.PlayGame.prototype = {
     deactivateStopTimer: function(obj1, obj2){
         this.stopTimerActivated = false;
         this.renderSadFaceRight();
-        obj2.kill();
+        obj2.destroy();
     },
     
 
@@ -1368,16 +1389,33 @@ weed.PlayGame.prototype = {
         //this.stopTimerLeaf.body.velocity.x = this.rnd.integerInRange(100, 300);
         //this.stopTimerLeaf.body.bounce.set(1);
         //this.stopTimerLeaf.body.velocity.y = 50;
+        
         this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
         this.time.events.repeat(this.speedOfPowerUpSprites, 200, function(){
+            var x_next, y_next;
+            if(this.stopTimerLeaf != null){
+                x_next = this.stopTimerLeaf.x + this.rnd.integerInRange(-100, 100);
+                y_next = this.stopTimerLeaf.y + this.rnd.integerInRange(-100, 100);
+            }
+            if(this.stopTimerLeaf == null){
+                x_next = this.rnd.integerInRange(100, 200);
+                y_next = this.rnd.integerInRange(250, 350);
+                console.log('Location of stopTimerLeaf is null');
+            }
+            if(y_next <= 125){
+                y_next = this.stopTimerLeaf.y + 150;
+            }
 
             if(this.stopTimerLeaf.input.isDragged == false){
-                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: this.stopTimerLeaf.x + this.rnd.integerInRange(-100, 100), y: this.stopTimerLeaf.y + this.rnd.integerInRange(-100, 100)}, 300, Phaser.Easing.Linear.None, true);
-                console.log('false');
+                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
+                
             }
-            else if(this.stopTimerLeaf.input.isDragged == true){
+            if(this.stopTimerLeaf.input.isDragged == true){
                 this.randomMovementStopTimerLeaf.stop();
-                console.log('true');
+               
+            }
+            if(this.stopTimerLeaf == null){
+                console.log('is null');
             }
         }, this);
 
@@ -1448,8 +1486,8 @@ weed.PlayGame.prototype = {
 //-------------------------------------------------good pot overlap handlers------------------------------------------------------------------ 
 
     cannabis_overlapHandler_good: function(obj1, obj2){
-        console.log("Overlapping");
-        obj2.kill();
+        //console.log("Overlapping");
+        obj2.destroy();
         weed.totalCannabis++;
         //this.good++;
         if(this.doubleScoreSeconds <= 5 && this.doubleScoreSeconds >= 0){
@@ -1471,8 +1509,8 @@ weed.PlayGame.prototype = {
     },
     
     garbage_overlapHandler_good: function(obj1, obj2){
-        console.log("Overlapping");
-        obj2.kill();
+        //console.log("Overlapping");
+        obj2.destroy();
         weed.totalGarbage++;
         //this.bad++;
         this.renderSadFaceLeft();
@@ -1481,8 +1519,8 @@ weed.PlayGame.prototype = {
     },
   //----------------------------------------------------------not so good pot overlap handlers------------------------------------------  
     cannabis_overlapHandler_bad: function(obj1, obj2){
-        console.log("Overlapping");
-        obj2.kill();
+        //console.log("Overlapping");
+        obj2.destroy();
         weed.good_in_garbage ++;
         //weed.totalCannabis--;
         this.secondsElapsed -= 2;
@@ -1495,8 +1533,8 @@ weed.PlayGame.prototype = {
     },
     
     garbage_overlapHandler_bad: function(obj1, obj2){
-        console.log("Overlapping");
-        obj2.kill();
+        //console.log("Overlapping");
+        obj2.destroy();
         //this.totalGarbage--;
         weed.bad_in_garbage ++;
         this.renderHappyFaceRight();
@@ -1630,7 +1668,7 @@ weed.PlayGame.prototype = {
             this.stopTimerActivated = false;
             this.doubleBonusSignal = false;
             this.speedOfPowerUpSprites = 1200;
-
+            this.callRenderGameOverScreenOnce = 0;
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
             weed.good_in_garbage = 0;
@@ -1687,7 +1725,7 @@ weed.PlayGame.prototype = {
             this.stopTimerActivated = false;
             this.doubleBonusSignal = false;
             this.speedOfPowerUpSprites = 1200;
-
+            this.callRenderGameOverScreenOnce = 0;
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
             weed.good_in_garbage = 0;
@@ -1705,7 +1743,73 @@ weed.PlayGame.prototype = {
 
 
 
+//------------------------------------------------------------GAME OVER SCREEN---------------------------------------------------//
+    renderGameOverScreen: function(){
+        this.gameOverBackdrop = this.add.sprite(this.world.centerX, this.world.centerY+60, 'pause_backdrop');
+        this.gameOverBackdrop.anchor.setTo(0.5, 0.5);
+        this.gameOverBackdrop.scale.x = 0;
+        this.gameOverBackdrop.scale.y = 0;
+        this.gameOverBackdrop.alpha = 0.95;
+        this.world.bringToTop(this.gameOverBackdrop);
+        this.add.tween(this.gameOverBackdrop.scale).to({x: 1.9, y: 2.0}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+            this.gameOverText = this.add.sprite(this.world.centerX, this.world.centerY+60, 'game_over_text');
+            this.gameOverText.scale.x = 0.8;
+            this.gameOverText.scale.y = 0.8;
+            this.gameOverText.anchor.setTo(0.5, 0.5);
+            this.gameOverText.alpha = 0;
+            this.add.tween(this.gameOverText).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.BG = null;
+                this.preBG = null;
+                this.empty_bin1 = null;
+                this.empty_bin2 = null;
+                this.plusOneText = null;
+                this.minusTwoText = null;
+                this.readyScreen = null;
+                this.readyText = null;
+                this.readyNumber = null;
+                this.unitsPlace = null;
+                this.tensPlace = null;
+                this.hundredsPlace = null;
+                
+                this.smilingFaceLeft = null;
+                this.smilingFaceRight = null;
+                this.sadFaceLeft = null;
+                this.sadFaceRight = null;
+                this.happyFace = null;
 
+                
+                this.overmessage;       // game over text
+                this.secondsElapsed = 15;   // counter for incrementing seconds
+                this.timer;             // phaser timer to keep track of seconds elapsed
+                this.t = null;
+                this.t_counter = 0;
+                this.counter_1_for_updateTimerDependentCalls = 0;
+                this.renderPowerUpsTimer = 100;
+                
+
+
+                this.doubleScoreSeconds = -1;
+                this.stopTimerSignal = false;
+                this.stopTimerCounter = -1;
+                this.powerSelector = 0;
+                this.doubleScoreLeaf = null;
+                this.stopTimerLeaf = null;
+                this.doubleScoreActivated = false;
+                this.minusFourActivated = false;
+                this.stopTimerActivated = false;
+                this.doubleBonusSignal = false;
+                this.speedOfPowerUpSprites = 1200;
+                this.callRenderGameOverScreenOnce = 0;
+                this.state.start('PostGame');
+            }, this);
+            //this.state.start('PostGame');
+        }, this);
+
+    },
+
+
+
+//---------------------------------------------------------END--------------------------------------------------------------//
 
 
 //---------------------------------------score and time check-----------------------------------------------------------------------
@@ -1716,51 +1820,13 @@ weed.PlayGame.prototype = {
         
         
         
-        if(this.secondsElapsed < 0){
+        if(this.secondsElapsed < 0 && this.callRenderGameOverScreenOnce == 0){
             
 
-            this.BG = null;
-            this.preBG = null;
-            this.empty_bin1 = null;
-            this.empty_bin2 = null;
-            this.plusOneText = null;
-            this.minusTwoText = null;
-            this.readyScreen = null;
-            this.readyText = null;
-            this.readyNumber = null;
-            this.unitsPlace = null;
-            this.tensPlace = null;
-            this.hundredsPlace = null;
             
-            this.smilingFaceLeft = null;
-            this.smilingFaceRight = null;
-            this.sadFaceLeft = null;
-            this.sadFaceRight = null;
-            this.happyFace = null;
-
-            
-            this.overmessage;       // game over text
-            this.secondsElapsed = 15;   // counter for incrementing seconds
-            this.timer;             // phaser timer to keep track of seconds elapsed
-            this.t = null;
-            this.t_counter = 0;
-            this.counter_1_for_updateTimerDependentCalls = 0;
-            this.renderPowerUpsTimer = 100;
-            
-
-
-            this.doubleScoreSeconds = -1;
-            this.stopTimerSignal = false;
-            this.stopTimerCounter = -1;
-            this.powerSelector = 0;
-            this.doubleScoreLeaf = null;
-            this.stopTimerLeaf = null;
-            this.doubleScoreActivated = false;
-            this.minusFourActivated = false;
-            this.stopTimerActivated = false;
-            this.doubleBonusSignal = false;
-            this.speedOfPowerUpSprites = 1200;
-            this.state.start('PostGame');
+            this.renderGameOverScreen();
+            this.callRenderGameOverScreenOnce++;
+            //this.state.start('PostGame');
             
         }
         
