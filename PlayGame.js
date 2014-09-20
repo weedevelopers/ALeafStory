@@ -1112,8 +1112,8 @@ weed.PlayGame.prototype = {
 //-----------------------------------------------------POWER-UPs---------------------------------------------------------//
     selectPower: function(){
 
-        //this.powerSelector = this.rnd.integerInRange(1, 3);
-        this.powerSelector = 3;
+        this.powerSelector = this.rnd.integerInRange(1, 3);
+        //this.powerSelector = 3;
     
         
         switch(this.powerSelector){
