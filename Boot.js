@@ -16,10 +16,24 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
     {                                          
         this.stage.backgroundColor = '#FFFFFF';
         
-        this.load.image('leaf', 'images/Mobile/assets/menu_sprite/Cannabis_Leafs_clip_art_medium.png');
+        this.load.image('leaf', 'images/Mobile/assets/menu_sprite/alternate/Cannabis_Leafs_clip_art_medium.png');
         this.load.image('prebackground', 'images/Mobile/assets/menu_sprite/preload.png');
         this.load.image('background', 'images/Mobile/assets/menu_sprite/background_edited_for_desktop.png');
+
+        this.load.image('bubble_blue','images/Mobile/assets/menu_sprite/alternate/help.png');
+        this.load.image('bubble_green','images/Mobile/assets/menu_sprite/alternate/play.png');
+        this.load.image('bubble_yellow','images/Mobile/assets/menu_sprite/alternate/high_score.png');
         
+        this.load.image('leaves', 'images/Mobile/assets/menu_sprite/falling_leaf.png');
+        
+        
+        this.load.image('sound_on', 'images/Mobile/assets/game_sprites/final/sound_on.png');
+        this.load.image('sound_off', 'images/Mobile/assets/game_sprites/final/sound_off.png');
+        this.load.image('text_leaf', 'images/Mobile/assets/game_sprites/final/leaf.png');
+        this.load.image('text_a', 'images/Mobile/assets/game_sprites/final/a.png');
+        this.load.image('text_story', 'images/Mobile/assets/game_sprites/final/story.png');
+        this.load.image('about', 'images/Mobile/assets/game_sprites/final/about.png');
+
         this.load.image('seed1', 'images/Mobile/assets/game_sprites/final/seed_1.png');
         this.load.image('seed2', 'images/Mobile/assets/game_sprites/final/seed_2.png');
         this.load.image('seed3', 'images/Mobile/assets/game_sprites/final/seed_3.png');
@@ -42,7 +56,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('garbage_half_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_half.png');
         this.load.image('garbage_full_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_full.png');
         this.load.image('ready_screen', 'images/Mobile/assets/game_sprites/final/ready.png');
-        this.load.image('ready_text', '/images/Mobile/assets/game_sprites/final/ready_text.png');//not in use
+        
         this.load.image('ready_text_new', '/images/Mobile/assets/game_sprites/final/ready_text_new.png');
         this.load.image('go_text_new', '/images/Mobile/assets/game_sprites/final/go_text_new.png');
         this.load.image('zero', 'images/Mobile/assets/game_sprites/final/zero.png');
@@ -64,8 +78,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('happy', 'images/Mobile/assets/game_sprites/final/expressions/happy.png');
         this.load.image('smile', 'images/Mobile/assets/game_sprites/final/expressions/smile.png');
         this.load.image('sad', 'images/Mobile/assets/game_sprites/final/expressions/sad.png');
-        this.load.image('sad_right', 'images/Mobile/assets/game_sprites/final/expressions/sad_left.png'); //Not in use
-        this.load.image('sad_left', 'images/Mobile/assets/game_sprites/final/expressions/sad_right.png');   //Not in Use
+        
         this.load.image('double_score_leaf', 'images/Mobile/assets/game_sprites/final/double_score_leaf.png');
         this.load.image('minus_four_leaf', 'images/Mobile/assets/game_sprites/final/minus_four_power.png');
         this.load.image('stop_timer_leaf', 'images/Mobile//assets/game_sprites/final/timer_stop_leaf.png');

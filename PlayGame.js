@@ -40,7 +40,7 @@ weed.PlayGame = function(game)
     this.minusFourActivated = false;
     this.stopTimerActivated = false;
     this.doubleBonusSignal = false;
-    this.speedOfPowerUpSprites = 1200;
+    this.speedOfPowerUpSprites = 350;
     this.callRenderGameOverScreenOnce = 0;
 };
 
@@ -114,7 +114,7 @@ weed.PlayGame.prototype = {
        //console.log(doubleScoreSeconds);
        this.stopTimerCounter--;
        this.renderPowerUpsTimer--;
-       this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 1;
+       
        console.log(this.speedOfPowerUpSprites);
        this.updateTimerDependentCalls();
 
@@ -137,7 +137,7 @@ weed.PlayGame.prototype = {
         if(this.stopTimerSignal == true && this.stopTimerCounter < 0){
             this.stopTimerSignal = false;
             this.stopTimerActivated = false;
-            this.powerStopTimerAnimation.kill();
+            this.powerStopTimerAnimation.destroy();
             this.unitsPlaceTween.resume();
             this.tensPlaceTween.resume();
 
@@ -150,7 +150,7 @@ weed.PlayGame.prototype = {
                                                                 .loop();
         }
         else if(this.doubleScoreSeconds < 0 && this.doubleBonusSignal == true){
-            this.powerDoubleBonusAnimation.kill();
+            this.powerDoubleBonusAnimation.destroy();
             this.doubleBonusSignal = false;
         } 
             
@@ -800,60 +800,68 @@ weed.PlayGame.prototype = {
     }, 
 
     renderHalfCannabis: function(){
-        this.empty_bin1 = this.add.sprite(150, this.world.height-300, 'cannabis_half_bin');
-        this.empty_bin1.scale.x = 0.5;
-        this.empty_bin1.scale.y = 0.5;
-        this.empty_bin1.anchor.setTo(0.5, 0.5);
+        this.empty_bin1_half = this.add.sprite(150, this.world.height-300, 'cannabis_half_bin');
+        this.empty_bin1_half.scale.x = 0.5;
+        this.empty_bin1_half.scale.y = 0.5;
+        this.empty_bin1_half.anchor.setTo(0.5, 0.5);
         this.physics.arcade.enable(this.empty_bin1);
+        this.world.bringToTop(this.empty_bin1_half);
         this.smilingFaceLeft = this.add.sprite(150, this.world.height-260, 'smile');
         this.smilingFaceLeft.anchor.setTo(0.5, 0.5);
         this.smilingFaceLeft.scale.x = 0.6;
         this.smilingFaceLeft.scale.y = 0.6;
+        
         this.world.bringToTop(this.cannabisLeaves);
         this.world.bringToTop(this.garbageLeaves);
         this.world.bringToTop(this.minusFourLeaves);
     },
     
     renderFullCannabis: function(){
-        this.empty_bin1 = this.add.sprite(150, this.world.height-300, 'cannabis_full_bin');
-        this.empty_bin1.scale.x = 0.5;
-        this.empty_bin1.scale.y = 0.5;
-        this.empty_bin1.anchor.setTo(0.5, 0.5);
+        this.empty_bin1_full = this.add.sprite(150, this.world.height-300, 'cannabis_full_bin');
+        this.empty_bin1_full.scale.x = 0.5;
+        this.empty_bin1_full.scale.y = 0.5;
+        this.empty_bin1_full.anchor.setTo(0.5, 0.5);
         this.physics.arcade.enable(this.empty_bin1);
+        this.world.bringToTop(this.empty_bin1_full);
         this.smilingFaceLeft = this.add.sprite(150, this.world.height-260, 'smile');
         this.smilingFaceLeft.anchor.setTo(0.5, 0.5);
         this.smilingFaceLeft.scale.x = 0.6;
         this.smilingFaceLeft.scale.y = 0.6;
+        
         this.world.bringToTop(this.cannabisLeaves);
         this.world.bringToTop(this.garbageLeaves);
         this.world.bringToTop(this.minusFourLeaves);
     },
     
     renderHalfGarbage: function(){
-        this.empty_bin2 = this.add.sprite(this.world.width-150, this.world.height-300, 'garbage_half_bin');
-        this.empty_bin2.scale.x = 0.5;
-        this.empty_bin2.scale.y = 0.5;
-        this.empty_bin2.anchor.setTo(0.5, 0.5);
+        this.empty_bin2_half = this.add.sprite(this.world.width-150, this.world.height-300, 'garbage_half_bin');
+        this.empty_bin2_half.scale.x = 0.5;
+        this.empty_bin2_half.scale.y = 0.5;
+        this.empty_bin2_half.anchor.setTo(0.5, 0.5);
         this.physics.arcade.enable(this.empty_bin2);
+        this.world.bringToTop(this.empty_bin2_half);
         this.smilingFaceRight = this.add.sprite(this.world.width-150, this.world.height-260, 'smile');
         this.smilingFaceRight.anchor.setTo(0.5, 0.5);
         this.smilingFaceRight.scale.x = 0.6;
         this.smilingFaceRight.scale.y = 0.6;
+        //
         this.world.bringToTop(this.cannabisLeaves);
         this.world.bringToTop(this.garbageLeaves);
         this.world.bringToTop(this.minusFourLeaves);
     },
     
     renderFullGarbage: function(){
-        this.empty_bin2 = this.add.sprite(this.world.width-150, this.world.height-300, 'garbage_full_bin');
-        this.empty_bin2.scale.x = 0.5;
-        this.empty_bin2.scale.y = 0.5;
-        this.empty_bin2.anchor.setTo(0.5, 0.5);
+        this.empty_bin2_full = this.add.sprite(this.world.width-150, this.world.height-300, 'garbage_full_bin');
+        this.empty_bin2_full.scale.x = 0.5;
+        this.empty_bin2_full.scale.y = 0.5;
+        this.empty_bin2_full.anchor.setTo(0.5, 0.5);
         this.physics.arcade.enable(this.empty_bin2);
+        this.world.bringToTop(this.empty_bin2_full);
         this.smilingFaceRight = this.add.sprite(this.world.width-150, this.world.height-260, 'smile');
         this.smilingFaceRight.anchor.setTo(0.5, 0.5);
         this.smilingFaceRight.scale.x = 0.6;
         this.smilingFaceRight.scale.y = 0.6;
+        
         this.world.bringToTop(this.cannabisLeaves);
         this.world.bringToTop(this.garbageLeaves);
         this.world.bringToTop(this.minusFourLeaves);
@@ -975,15 +983,18 @@ weed.PlayGame.prototype = {
         d2 = str.charAt(1);
         d3 = str.charAt(2);
         //console.log(str);
-        this.loadNumberImage(str);
-        
+        if(num >= 0){
+            this.loadNumberImage(str);
+        }
 
     },
 
     loadNumberImage: function(stringNumber){
         var i, spriteName;
         var length;
-
+        /*var temp = 2-3;
+        var temp1 = temp.toString();
+        console.log(temp1);*/
         length = stringNumber.length;
         
         for(i = 0; i < length; i++){
@@ -1020,7 +1031,9 @@ weed.PlayGame.prototype = {
                 case '9':
                     spriteName = 'nine';
                     break;
+                
                 default:
+                    
                     console.log('Error, not valid');
                     break;
             }
@@ -1034,6 +1047,7 @@ weed.PlayGame.prototype = {
                 this.unitsPlace = this.add.sprite(300, 30, spriteName);
                 this.unitsPlace.alpha = 0;
             }
+           
             else if(i == 0 && stringNumber.length == 1 && stringNumber.charAt(i) >= '6'){
                 this.tensPlace.destroy();
                 this.unitsPlace = this.add.sprite(275, 30, spriteName);
@@ -1045,6 +1059,7 @@ weed.PlayGame.prototype = {
                 this.unitsPlace = this.add.sprite(275, 30, temp_string);
                 this.unitsPlace.alpha = 0;
             }
+            
             //console.log(i);
         }
 
@@ -1112,7 +1127,7 @@ weed.PlayGame.prototype = {
 //-----------------------------------------------------POWER-UPs---------------------------------------------------------//
     selectPower: function(){
 
-        this.powerSelector = this.rnd.integerInRange(1, 3);
+        this.powerSelector = this.rnd.integerInRange(1, 4);
         //this.powerSelector = 3;
     
         
@@ -1192,7 +1207,7 @@ weed.PlayGame.prototype = {
         this.doubleScoreLeaf.body.bounce.set(1);*/
         //this.doubleScoreLeaf.body.velocity.y = 50;
         //temp_timer = this.time.create(false);
-        this.time.events.repeat(this.speedOfPowerUpSprites, 200, function(){
+        this.time.events.repeat(1000, 200, function(){
             var x_next, y_next;
             if(this.doubleScoreLeaf != null){
                 x_next = this.doubleScoreLeaf.x + this.rnd.integerInRange(-100, 100);
@@ -1207,17 +1222,18 @@ weed.PlayGame.prototype = {
             if(y_next <= 125){
                 y_next = this.doubleScoreLeaf.y + 150;
             }
-            if(this.doubleScoreLeaf.input.isDragged == false){
-                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
+            if(this.doubleScoreLeaf != null && this.doubleScoreLeaf.input.isDragged == false){
+                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: x_next, y: y_next}, this.speedOfPowerUpSprites, Phaser.Easing.Linear.None, true);
                
             }
-            if(this.doubleScoreLeaf.input.isDragged == true){
+            if(this.doubleScoreLeaf != null && this.doubleScoreLeaf.input.isDragged == true){
                 this.randomMovementDoubleScoreLeaf.stop();
                 
             }
             if(this.doubleScoreLeaf == null){
                 console.log('doubleScoreLeaf is null');
             }
+            this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 2;
         }, this);
         
 
@@ -1234,6 +1250,9 @@ weed.PlayGame.prototype = {
 
 
     renderPowerDoubleBonusActivated: function(){
+        if(this.powerStopTimerAnimation != null){
+            this.powerStopTimerAnimation.destroy();
+        }
         this.powerDoubleBonusAnimation = this.add.sprite(150, this.world.height-350, 'two_x_sprite');
         this.powerDoubleBonusAnimation.alpha = 0.7;
         this.powerDoubleBonusAnimation.scale.x = 0.4;
@@ -1391,7 +1410,7 @@ weed.PlayGame.prototype = {
         //this.stopTimerLeaf.body.velocity.y = 50;
         
         this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
-        this.time.events.repeat(this.speedOfPowerUpSprites, 200, function(){
+        this.time.events.repeat(1000, 200, function(){
             var x_next, y_next;
             if(this.stopTimerLeaf != null){
                 x_next = this.stopTimerLeaf.x + this.rnd.integerInRange(-100, 100);
@@ -1406,17 +1425,18 @@ weed.PlayGame.prototype = {
                 y_next = this.stopTimerLeaf.y + 150;
             }
 
-            if(this.stopTimerLeaf.input.isDragged == false){
-                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
+            if(this.stopTimerLeaf != null && this.stopTimerLeaf.input.isDragged == false){
+                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: x_next, y: y_next}, this.speedOfPowerUpSprites, Phaser.Easing.Linear.None, true);
                 
             }
-            if(this.stopTimerLeaf.input.isDragged == true){
+            if(this.stopTimerLeaf != null && this.stopTimerLeaf.input.isDragged == true){
                 this.randomMovementStopTimerLeaf.stop();
                
             }
             if(this.stopTimerLeaf == null){
                 console.log('is null');
             }
+            this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 2;
         }, this);
 
 
@@ -1430,7 +1450,9 @@ weed.PlayGame.prototype = {
     },
 
     renderStopTimerPowerActivated: function(){
-
+        if(this.powerDoubleBonusAnimation != null){
+            this.powerDoubleBonusAnimation.destroy();
+        }
         this.powerStopTimerAnimation = this.add.sprite(150, this.world.height-350, 'stop_timer_sprite');
         this.powerStopTimerAnimation.alpha = 0.7;
         this.powerStopTimerAnimation.anchor.setTo(0.18, 0.18);
@@ -1667,7 +1689,7 @@ weed.PlayGame.prototype = {
             this.minusFourActivated = false;
             this.stopTimerActivated = false;
             this.doubleBonusSignal = false;
-            this.speedOfPowerUpSprites = 1200;
+            this.speedOfPowerUpSprites = 350;
             this.callRenderGameOverScreenOnce = 0;
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
@@ -1724,7 +1746,7 @@ weed.PlayGame.prototype = {
             this.minusFourActivated = false;
             this.stopTimerActivated = false;
             this.doubleBonusSignal = false;
-            this.speedOfPowerUpSprites = 1200;
+            this.speedOfPowerUpSprites = 350;
             this.callRenderGameOverScreenOnce = 0;
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
@@ -1798,7 +1820,7 @@ weed.PlayGame.prototype = {
                 this.minusFourActivated = false;
                 this.stopTimerActivated = false;
                 this.doubleBonusSignal = false;
-                this.speedOfPowerUpSprites = 1200;
+                this.speedOfPowerUpSprites = 350;
                 this.callRenderGameOverScreenOnce = 0;
                 this.state.start('PostGame');
             }, this);
