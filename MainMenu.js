@@ -17,11 +17,11 @@ weed.MainMenu.prototype = {
 	
 	preload: function()
     {   
-        this.load.image('test', 'images/Mobile/assets/menu_sprite/test.png');
+        
        
-       this.preBG= this.add.sprite(0 ,0 ,'prebackground');
+        this.preBG= this.add.sprite(0 ,0 ,'prebackground');
         this.preBG.alpha = 1;
-        t1 = this.add.tween(this.preBG).delay(0).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false, 0).start();
+        t1 = this.add.tween(this.preBG).to({alpha: 1}, 250, Phaser.Easing.Linear.None, false, 0).start();
         t1.onComplete.add(this.backgroundload, this);
         
         /*this.loadBar = this.add.sprite(this.world.centerX, this.world.centerY+200, 'leaf'); 
@@ -37,7 +37,7 @@ weed.MainMenu.prototype = {
 
         this.BG= this.add.sprite(0 ,0 ,'background');
         this.BG.alpha = 0;
-        t2 = this.add.tween(this.BG).delay(200).to({alpha: 0.8}, 500, Phaser.Easing.Linear.None, false, 0).start();
+        t2 = this.add.tween(this.BG).to({alpha: 0.8}, 250, Phaser.Easing.Linear.None, false, 0).start();
         t2.onComplete.add(this.loadName, this);
 
 
@@ -48,7 +48,7 @@ weed.MainMenu.prototype = {
     create: function()
     {
         
-        this.loadBar.cropEnabled = false; //force show the whole thing
+        //this.loadBar.cropEnabled = false; //force show the whole thing
                 
         
     },
@@ -60,7 +60,7 @@ weed.MainMenu.prototype = {
         this.game_name1.scale.x = 0.7;
         this.game_name1.scale.y = 0.7;
         this.game_name1.alpha = 0;
-        this.add.tween(this.game_name1).delay(200).to({alpha: 1}, 1100, Phaser.Easing.Linear.None, false, 0).start();
+        this.add.tween(this.game_name1).delay(100).to({alpha: 1}, 800, Phaser.Easing.Linear.None, false, 0).start();
         
 
         this.game_name2 = this.add.sprite(this.world.centerX+60, 65, 'text_leaf');
@@ -68,14 +68,14 @@ weed.MainMenu.prototype = {
         this.game_name2.scale.x = 0.7;
         this.game_name2.scale.y = 0.7;
         this.game_name2.alpha = 0;
-        this.add.tween(this.game_name2).delay(200).to({alpha: 1}, 1100, Phaser.Easing.Linear.None, false, 0).start();
+        this.add.tween(this.game_name2).delay(100).to({alpha: 1}, 800, Phaser.Easing.Linear.None, false, 0).start();
         
         this.game_name3 = this.add.sprite(this.world.centerX, 200, 'text_story');
         this.game_name3.anchor.setTo(0.5,0.5);
         this.game_name3.scale.x = 0.4;
         this.game_name3.scale.y = 0.4;
         this.game_name3.alpha = 0;
-        t6 = this.add.tween(this.game_name3).delay(200).to({alpha: 1}, 1100, Phaser.Easing.Linear.None, false, 0).start();
+        t6 = this.add.tween(this.game_name3).delay(100).to({alpha: 1}, 800, Phaser.Easing.Linear.None, false, 0).start();
         t6.onComplete.add(this.leafAnimations, this);
 
     },
@@ -84,7 +84,7 @@ weed.MainMenu.prototype = {
         this.loadBar = this.add.sprite(this.world.centerX, this.world.centerY+300, 'leaf'); 
         this.loadBar.anchor.setTo(0.5, 0.5);
         this.loadBar.alpha =0;
-        t3 = this.add.tween(this.loadBar).delay(200).to({alpha:0.8}, 1100, Phaser.Easing.Linear.None, false, 0).start();
+        t3 = this.add.tween(this.loadBar).to({alpha:0.8}, 800, Phaser.Easing.Linear.None, false, 0).start();
         t3.onComplete.add(this.bubbleLoad, this);
               
     },
@@ -95,49 +95,63 @@ weed.MainMenu.prototype = {
         this.bubble1 = this.add.sprite(this.world.centerX-210, this.world.centerY+130, 'bubble_yellow'); 
         this.bubble1.anchor.setTo(0.5, 0.5);
         this.bubble1.alpha = 0;
-        this.add.tween(this.bubble1).delay(200).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
-        //this.bubble1.inputEnabled = true;
-        //this.bubble1.events.onInputDown.add(this.button1, this);
+        this.add.tween(this.bubble1).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
+        this.bubble1.inputEnabled = true;
+        this.bubble1.events.onInputDown.add(this.button1, this);
         
             
         this.bubble2 = this.add.sprite(this.world.centerX, this.world.centerY, 'bubble_green'); 
         this.bubble2.anchor.setTo(0.5, 0.5); // Sprites anchor is in the center of it
         this.bubble2.alpha = 0;
-        this.add.tween(this.bubble2).delay(200).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
+        this.add.tween(this.bubble2).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
         this.bubble2.inputEnabled = true;
-        this.bubble2.events.onInputDown.add(this.button1, this);
+        this.bubble2.events.onInputDown.add(this.button2, this);
                         
         this.bubble3 = this.add.sprite(this.world.centerX+210, this.world.centerY+130, 'bubble_blue'); 
         this.bubble3.anchor.setTo(0.5, 0.5); // Sprites anchor is in the center of it
         this.bubble3.alpha = 0;
-        this.add.tween(this.bubble3).delay(200).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
+        this.add.tween(this.bubble3).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
         this.bubble3.inputEnabled = true;
-        this.bubble3.events.onInputDown.add(this.button1, this);
+        this.bubble3.events.onInputDown.add(this.button3, this);
 
-        //this.sound_on = this.add.sprite(this.world.centerX-170, 1050, 'sound_on');
+      if(weed.sound_mute ==true)
+        {
+            this.sound_control_off();
+            
+        }
+        
         this.sound_on = this.add.sprite(this.world.centerX-260, 1100, 'sound_on'); 
         this.sound_on.alpha=0;
         this.sound_on.anchor.setTo(0.5, 0.5);
         this.sound_on.scale.x =0.3;
         this.sound_on.scale.y =0.3;
-        this.add.tween(this.sound_on).delay(200).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
+        
+        if(weed.sound_mute == false)
+        {
+        
+        this.add.tween(this.sound_on).to({alpha: 0.8}, 1000, Phaser.Easing.Linear.None, false).start();
         this.sound.mute = false;
         this.sound_on.inputEnabled = true;
         this.sound_on.events.onInputDown.add(this.sound_control_off, this);
-
+        }
+        
         this.about = this.add.sprite(this.world.centerX+260, 1100, 'about'); 
         this.about.alpha=0;
         this.about.anchor.setTo(0.5, 0.5);
         this.about.scale.x =0.3;
         this.about.scale.y =0.3;
-        this.add.tween(this.about).delay(200).to({alpha: 0.7}, 1000, Phaser.Easing.Linear.None, false).start()
+        this.about.inputEnabled=true;
+        this.about.events.onInputDown.add(this.about_button, this);
+        this.add.tween(this.about).to({alpha: 0.7}, 1000, Phaser.Easing.Linear.None, false).start()
         .onComplete.add(this.bubbleAnimations, this);
         
     },
     
+    
 
  sound_control_off: function()
     {
+            weed.sound_mute= true;
             this.sound.mute= true;
             this.add.tween(this.sound_on).to({alpha: 0}, 500, Phaser.Easing.Linear.None, false).start();
             this.sound_on.inputEnabled= false;
@@ -150,11 +164,13 @@ weed.MainMenu.prototype = {
             this.add.tween(this.sound_off).to({alpha: 0.8}, 500, Phaser.Easing.Linear.None, false).start();
             this.sound_off.inputEnabled= true;
             this.sound_off.events.onInputDown.add(this.sound_control_on, this);
+
         
     },
 
     sound_control_on:function()
     {
+            weed.sound_mute= false;
             this.sound.mute= false;
             this.sound_off.inputEnabled =false;
             this.sound_off.alpha =0.8;
@@ -165,7 +181,6 @@ weed.MainMenu.prototype = {
             this.sound_on.inputEnabled= true;
             this.sound_on.events.onInputDown.add(this.sound_control_off, this);
     },
-  
  bubbleAnimations: function()
     {
         
@@ -197,6 +212,45 @@ weed.MainMenu.prototype = {
                         .loop();
 */
         this.droppingLeaves();
+        var random_temp = this.rnd.integerInRange(1, 2);
+        var volume = 0.5;
+        var i = 0;
+        if(random_temp == 1 && this.mainMenuAudio==null){
+            this.mainMenuAudio = this.add.audio('main_menu_audio_1');
+            this.mainMenuAudio.play('', 0, 0, true);
+            this.time.events.repeat(50, 1000000, function(){
+                
+                if(i != volume && this.mainMenuAudio!=null){
+                    this.mainMenuAudio.volume = i;
+                    i = i+0.01;
+
+                }
+                if(i >= volume && this.mainMenuAudio!=null){
+                    this.mainMenuAudio.volume = i;
+                    i = volume;
+
+                }
+            }, this);
+            
+        }
+        if(random_temp == 2 && this.mainMenuAudio==null){
+            volume =0.7;
+            this.mainMenuAudio = this.add.audio('main_menu_audio_2');
+            this.mainMenuAudio.play('', 0, 0, true);
+            this.time.events.repeat(50, 1000000, function(){
+                
+                if(i != volume && this.mainMenuAudio!=null){
+                    this.mainMenuAudio.volume = i;
+                    i = i+0.01;
+
+                }
+                if(i >= volume && this.mainMenuAudio!=null){
+                    this.mainMenuAudio.volume = i;
+                    i = volume;
+
+                }
+            }, this);
+        }
                 
         
     },
@@ -227,10 +281,30 @@ weed.MainMenu.prototype = {
     },
     
         
-    button1 : function()
+    button2 : function()
     {
+        if(this.mainMenuAudio != null){
+            this.mainMenuAudio.stop();
+            this.mainMenuAudio=null;
+        }
         this.state.start('PlayGame'); 
     },
     
+    button1 : function()
+    {
+       
+        this.state.start('HighScores'); 
+    },
+    
+    button3: function()
+    {
+        
+        this.state.start('Help');
+    },
+    
+    about_button: function()
+    {
+        this.state.start('about');
+    }
     
 };

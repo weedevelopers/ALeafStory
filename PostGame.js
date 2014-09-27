@@ -36,16 +36,20 @@ weed.PostGame.prototype = {
         this.add.tween(this.preBG).delay(0).to({alpha: 1}, 800, Phaser.Easing.Linear.None, true)
         .onComplete.add(function()
         {
+            
+            this.score_bounce_audio = this.add.audio('score_bounce_audio');
+            this.score_bounce_audio.play('', 0, 1, false);
+
             this.score_image= this.add.sprite(this.world.centerX-10,-150 ,'score_sprite');  //-----------------score text
-            this.score_image.anchor.setTo(0.5, 0.5);
-            this.add.tween(this.score_image).to({x: this.world.centerX-10, y: 150}, 800, Phaser.Easing.Bounce.Out, true) 
+            this.score_image.anchor.setTo(0.5, 1);
+            this.add.tween(this.score_image).to({x: this.world.centerX-10, y: 250}, 1500, Phaser.Easing.Bounce.Out, true) 
             .onComplete.add(this.buckets_zoom_left, this);  
         }, this);
         
-       
-        
-        
-        //this.gotoMainMenu();
+    //-----------------------------------------------------------------audio-----------------------------------
+        this.scrolling_audio= this.add.audio('scrolling_numbers');
+        this.scrolling_audio.play('', 0, 0, true);
+	
     
     },
     
@@ -57,36 +61,51 @@ weed.PostGame.prototype = {
          this.bucket_left.anchor.setTo(0.5,0.5);
          this.bucket_left.scale.x = 0.4;
          this.bucket_left.scale.y = 0.4;
-         this.add.tween(this.bucket_left.scale).to({ x :0.4, y :0.4 }, 300, Phaser.Easing.Linear.None,true)
-                .to({ x :0.5, y :0.5 }, 300, Phaser.Easing.Linear.None)
-                .to({ x :0.4, y :0.4 }, 300, Phaser.Easing.Linear.None)
+
+         this.pot1_audio =this.add.audio('pot1_audio');
+        
+         this.add.tween(this.bucket_left.scale).to({ x :0.4, y :0.4 }, 500, Phaser.Easing.Linear.None,true)
+                                 .to({ x :0.5, y :0.5 }, 500, Phaser.Easing.Linear.None)
+                                 .to({ x :0.4, y :0.4 }, 500, Phaser.Easing.Linear.None)
                 .onComplete.add(function()
                     {
-                        this.time.events.repeat(800, 1, this.bucket_zoom_right, this);
+                        this.pot1_audio.play('', 0, 1, false);
+                        this.time.events.repeat(800, 1, this.plus_animation, this);
                     }, this);
     },
 
-    bucket_zoom_right: function()            
+    plus_animation: function()
     {
-    
         this.plus =this.add.sprite(this.world.centerX, 420, 'plus');
         this.plus.anchor.setTo(0.5,0.5);
         this.plus.scale.x = 0.15;
         this.plus.scale.y = 0.15;
         this.add.tween(this.plus.scale).to({ x :0.17, y :0.17 }, 200, Phaser.Easing.Linear.None, true)
-                        .to({ x :0.15, y :0.15 }, 200, Phaser.Easing.Linear.None, true);
+                        .to({ x :0.15, y :0.15 }, 200, Phaser.Easing.Linear.None)
+                        .onComplete.add(this.bucket_zoom_right, this);
+    },
+
+    bucket_zoom_right: function()            
+    {
+    
+        
 
         this.bucket_right = this.add.sprite(this.world.centerX+120, 420, 'bucket_right');
         this.bucket_right.anchor.setTo(0.5,0.5);
         this.bucket_right.scale.x = 0.4;
         this.bucket_right.scale.y = 0.4;
-        this.add.tween(this.bucket_right.scale).to({ x :0.4, y :0.4 }, 300, Phaser.Easing.Linear.None, true)
+
+        this.pot2_audio =this.add.audio('pot2_audio');
+        
+        
+        this.add.tween(this.bucket_right.scale).to({ x :0.4, y :0.4 }, 500, Phaser.Easing.Linear.None, true)
         .onComplete.add(function()
                             {
-                                this.add.tween(this.bucket_right.scale).to({ x :0.5, y :0.5 }, 300, Phaser.Easing.Linear.None, true)
+                                this.pot2_audio.play('', 0, 1, false);
+                                this.add.tween(this.bucket_right.scale).to({ x :0.5, y :0.5 }, 500, Phaser.Easing.Linear.None, true)
                                 .onComplete.add(function()
                                     {
-                                        this.add.tween(this.bucket_right.scale).to({ x :0.4, y :0.4 }, 300, Phaser.Easing.Linear.None, true)
+                                        this.add.tween(this.bucket_right.scale).to({ x :0.4, y :0.4 }, 500, Phaser.Easing.Linear.None, true)
                                         .onComplete.add(this.calculateScores, this);
                                     }    , this);
 
@@ -98,10 +117,73 @@ weed.PostGame.prototype = {
     
     calculateScores: function()
     {
-        /*weed.totalCannabis= 99;             //---------------------total cannabis collected in good pot
-        weed.totalGarbage = 56;             //---------------------total garbage in good pot (penalty)
-        weed.bad_in_garbage = 89;           //---------------------total garbage in bad pot (bonus)*/
+       /* weed.totalCannabis=100 ;             //---------------------total cannabis collected in good pot
+        weed.totalGarbage = 100;             //---------------------total garbage in good pot (penalty)
+        weed.bad_in_garbage = 100;    */     //---------------------total garbage in bad pot (bonus)*/
         this.totalScore = weed.totalCannabis-weed.totalGarbage+weed.bad_in_garbage;
+        
+         if (this.game.device.localStorage)
+            {
+
+               var temp =0;
+               var i,t;
+               var arr= []; 
+               var pos= 0;    
+               var flag =0;
+                
+                  
+               for(i=0; i<10; i++)
+                {
+                    t=i+1;
+                    t= t.toString();
+                    arr[i] = Math.floor(localStorage.getItem('HighScore'+t));
+                    
+                    if((this.totalScore>= arr[i]) && (flag==0))
+                    {
+                        pos =i;
+                        flag=1;
+                    }   
+                }
+                
+                
+            if(flag==1)
+            {
+                for(i = 0; i < pos; i++)
+                {
+                    t= i+1;
+                    t= t.toString();
+                    localStorage.setItem('HighScore'+t,arr[i]);
+                }
+                
+                temp= pos+1;
+                temp= temp.toString();
+                localStorage.setItem('HighScore'+temp, this.totalScore);
+               
+                
+                for(i = pos + 1; i < arr.length; i++)
+                {
+                    t= i+1;
+                    t= t.toString();
+                    localStorage.setItem('HighScore'+t,arr[i-1]);
+                }
+                    
+            }
+                /*var temp = 0;
+                localStorage.setItem('HighScore1', temp);
+                localStorage.setItem('HighScore2', temp);
+                localStorage.setItem('HighScore3', temp);
+                localStorage.setItem('HighScore4', temp);
+                localStorage.setItem('HighScore5', temp);
+                localStorage.setItem('HighScore6', temp);
+                localStorage.setItem('HighScore7', temp);
+                localStorage.setItem('HighScore8', temp);
+                localStorage.setItem('HighScore9', temp);
+                localStorage.setItem('HighScore10', temp);*/
+
+            }
+        
+
+
         this.separate_score_Digits_totalCannabis();
            
     },
@@ -233,12 +315,14 @@ weed.PostGame.prototype = {
     
     display_numbers_onesplace: function()
     {
-                
+               
             this.text1 = this.add.sprite(this.world.centerX-180, 665, 'goodstuff');
             this.text1.anchor.setTo(0.5, 0.5);
             this.text1.scale.x= 0.85;
             this.text1.scale.y= 0.85;    
 
+            this.scrolling_audio.volume =1;
+           
                 if(this.i < this.onesplace)
                 {
                     if(this.hundredsplace == 0)
@@ -330,6 +414,7 @@ weed.PostGame.prototype = {
         
                 if(this.j== this.tensplace)
                 {
+                    
                     if(this.hundredsplace ==0)
                     {
                         this.temp_sprite= this.add.sprite(this.world.centerX+75,660 ,this.spritename_green(this.j));
@@ -337,9 +422,11 @@ weed.PostGame.prototype = {
                         this.temp_sprite.scale.x = 0.7;
                         this.temp_sprite.scale.y = 0.7;
                         this.temp_sprite.alpha = 1;
+                        
                         this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                         .onComplete.add(this.tensplace_complete, this);
                         this.j= 0;
+                        
                     }
                     
                     else
@@ -362,10 +449,15 @@ weed.PostGame.prototype = {
          this.time.events.repeat(100, this.hundredsplace, this.display_numbers_hundredsplace, this);
 
         if(this.hundredsplace==0)
-        this.separate_score_Digits_totalGarbage();
+        {
+            this.scrolling_audio.volume=0;
+            this.separate_score_Digits_totalGarbage();
+        }
+        
     },
       display_numbers_hundredsplace: function()
     {
+        
                 if(this.k < this.hundredsplace)
                 {
                     this.temp_sprite= this.add.sprite(this.world.centerX+10,660 ,this.spritename_green(this.k));
@@ -387,7 +479,7 @@ weed.PostGame.prototype = {
                     this.temp_sprite.alpha = 1;
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                     .onComplete.add(this.separate_score_Digits_totalGarbage, this);    
-
+                    this.scrolling_audio.volume=0;
                     this.k= 0;
                     
                 }
@@ -455,6 +547,8 @@ weed.PostGame.prototype = {
             this.text2.scale.x= 0.55;
             this.text2.scale.y= 0.55;    
 
+            this.scrolling_audio.volume =1;
+
                 if(this.a < this.onesplace)
                 {
                     this.temp_sprite= this.add.sprite(this.world.centerX+160,860 ,this.spritename_red(this.a));
@@ -477,7 +571,7 @@ weed.PostGame.prototype = {
                     this.add.tween(this.temp_sprite).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                     .onComplete.add(this.onesplace_complete_garbageInGood, this);
                     this.a= 0;
-                    console.log(this.a);
+                   
                 }
     },
         
@@ -497,7 +591,7 @@ weed.PostGame.prototype = {
                     this.temp_sprite.alpha = 1;
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
                     this.b= this.b+1;
-                    console.log(this.b);
+                    
                 }
         
                 if(this.b== this.tensplace)
@@ -510,7 +604,7 @@ weed.PostGame.prototype = {
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                   .onComplete.add(this.tensplace_complete_garbageInGood, this);
                     this.b= 0;
-                    console.log(this.b);
+                    
                 }
     },
         
@@ -519,9 +613,11 @@ weed.PostGame.prototype = {
          if(this.hundredsplace!=0)
          this.time.events.repeat(100, this.hundredsplace, this.display_numbers_hundredsplace_garbageInGood, this);
 
-        else
-           this.separate_score_Digits_garbageInBad();
-
+         if(this.hundredsplace==0)
+           { 
+                this.scrolling_audio.volume =0;
+                this.separate_score_Digits_garbageInBad();
+           }    
          
     },
       display_numbers_hundredsplace_garbageInGood: function()
@@ -535,7 +631,7 @@ weed.PostGame.prototype = {
                     this.temp_sprite.alpha = 1;
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
                     this.c= this.c+1;
-                    console.log(this.c);
+                    
                 }
         
                 if(this.c== this.hundredsplace)
@@ -547,9 +643,9 @@ weed.PostGame.prototype = {
                     this.temp_sprite.alpha = 1;
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                     .onComplete.add(this.separate_score_Digits_garbageInBad, this);
-                    
+                    this.scrolling_audio.volume =0;
                     this.c= 0;
-                    console.log(this.c);
+                    
                 }
     },
     
@@ -616,6 +712,7 @@ weed.PostGame.prototype = {
             this.text3.scale.x= 0.6;
             this.text3.scale.y= 0.6;
 
+            this.scrolling_audio.volume =1;
                 if(this.l < this.onesplace)
                 {
                     this.temp_sprite= this.add.sprite(this.world.centerX+170,1000 ,this.spritename_green(this.l));
@@ -646,11 +743,14 @@ weed.PostGame.prototype = {
     onesplace_complete_garbageInBad: function()
     {
        
-        if(this.tensplace!=0)
+        if(this.tensplace!=0 || this.hundredsplace!=0)
         this.time.events.repeat(100, this.tensplace, this.display_numbers_tensplace_garbageInBad, this);
 
         else
-            this.render_totalscore();        
+            {
+                this.scrolling_audio.volume=0;
+                this.render_totalscore();        
+            }
 
     },   
   
@@ -666,7 +766,7 @@ weed.PostGame.prototype = {
                     this.temp_sprite.alpha = 1;
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
                     this.m= this.m+1;
-                    console.log(this.m);
+                    
                 }
         
                 if(this.m== this.tensplace)
@@ -676,7 +776,7 @@ weed.PostGame.prototype = {
                     this.temp_sprite.scale.x = 0.4;
                     this.temp_sprite.scale.y = 0.4;
                     this.temp_sprite.alpha = 1;
-                    this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 750, Phaser.Easing.Linear.None, true)
+                    this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                     .onComplete.add(this.tensplace_complete_garbageInBad, this);
                    
                     this.m= 0;
@@ -692,7 +792,10 @@ weed.PostGame.prototype = {
         this.time.events.repeat(100, this.tensplace, this.display_numbers_hundredsplace_garbageInBad, this);
 
         else
-            this.render_totalscore();
+            {
+                this.scrolling_audio.volume =0;
+                this.render_totalscore();
+            }
     },   
         
     
@@ -721,7 +824,7 @@ weed.PostGame.prototype = {
 
                     this.add.tween(this.temp_sprite).delay(0).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true)
                     .onComplete.add(this.render_totalscore, this);
-
+                    this.scrolling_audio.volume =0;
                     this.n= 0;
                     
                 }
@@ -732,7 +835,7 @@ weed.PostGame.prototype = {
 render_totalscore: function()
     {
     
-    this.time.events.repeat(150, 1, function()
+    this.time.events.repeat(1000, 1, function()
         {
             this.backdrop = this.add.sprite(this.world.centerX,this.world.centerY+100, 'totalscore_screen');
             this.backdrop.anchor.setTo(0.5, 0.5);
@@ -843,6 +946,33 @@ render_totalscore2: function()
                                     .to({x: 0.8, y: 0.8 }, 500, Phaser.Easing.Linear.None, true)
                                     .to({ x: 0.85, y: 0.85 }, 500, Phaser.Easing.Linear.None)
                                     .loop();
+
+        var b= 0;
+        b=Math.floor(localStorage.getItem('HighScore1'));
+        console.log(b);                          
+         if(this.totalScore == b)
+         {
+            
+            this.add.tween(this.score_image.scale).to({y:0}, 500, Phaser.Easing.Linear.None, false).start()
+            .onComplete.add(function()
+                            {
+                                this.newbest_audio = this.add.audio('newbest_audio');
+                                this.newbest_audio.play('', 0, 1, false);
+                                
+                                this.high1= this.add.sprite(this.world.centerX-10, -150, 'new_high1');
+                                this.high1.anchor.setTo(0.5, 0.5);  
+                                this.high1.scale.setTo(0.5,0.5);  
+                                this.add.tween(this.high1).to({x: this.world.centerX-10, y: 65}, 700, Phaser.Easing.Bounce.Out, false).start();
+                               
+                                this.high2=this.add.sprite(this.world.centerX-10, -150, 'new_high2');
+                                this.high2.anchor.setTo(0.5,0.5);
+                                this.high2.scale.setTo(0.8,0.8);
+                                this.add.tween(this.high2).to({x: this.world.centerX-10, y: 185}, 800, Phaser.Easing.Bounce.Out, false).start();
+                               
+
+                            }, this); 
+          }                  
+
         this.render_rating(); 
     },
 
@@ -902,48 +1032,48 @@ rating_calculator: function()
     else{
         totalGarbage_temp = weed.totalGarbage;
     }
-    var ratio = weed.totalCannabis/totalGarbage_temp;
+   
     
-    if(weed.totalCannabis > 40 )
+    if(weed.totalCannabis >= 180 )
     {
-        this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
-        this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
-        this.time.events.repeat(660, 1,this.rating_selector, this, 3);
-        this.time.events.repeat(880, 1,this.rating_selector, this, 4);
-        this.time.events.repeat(1100, 1,this.rating_selector, this, 5);
-        this.time.events.repeat(1300, 1,this.render_buttons, this);
+        this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
+        this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
+        this.time.events.repeat(690, 1,this.rating_selector, this, 3);
+        this.time.events.repeat(920, 1,this.rating_selector, this, 4);
+        this.time.events.repeat(1150, 1,this.rating_selector, this, 5);
+        this.time.events.repeat(1380, 1,this.render_buttons, this);
            
        
     }
-    if(weed.totalCannabis > 30 && weed.totalCannabis <= 40)
+    if(weed.totalCannabis >= 120 && weed.totalCannabis < 180)
     {
-        this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
-        this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
-        this.time.events.repeat(660, 1,this.rating_selector, this, 3);
-        this.time.events.repeat(880, 1,this.rating_selector, this, 4);
-        this.time.events.repeat(1080, 1,this.render_buttons, this);
+        this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
+        this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
+        this.time.events.repeat(690, 1,this.rating_selector, this, 3);
+        this.time.events.repeat(920, 1,this.rating_selector, this, 4);
+        this.time.events.repeat(1380, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis > 20 && weed.totalCannabis <= 30)
+    if(weed.totalCannabis >= 60 && weed.totalCannabis < 120)
     {
-        this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
-        this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
-        this.time.events.repeat(660, 1,this.rating_selector, this, 3);
-        this.time.events.repeat(860, 1,this.render_buttons, this);
+        this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
+        this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
+        this.time.events.repeat(690, 1,this.rating_selector, this, 3);
+        this.time.events.repeat(920, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis > 10 && weed.totalCannabis <= 20)
+    if(weed.totalCannabis >20 && weed.totalCannabis < 60)
     {
-        this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
-        this.time.events.repeat(440, 1,this.rating_selector, this, 2); 
-        this.time.events.repeat(640, 1,this.render_buttons, this);    
+        this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
+        this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
+        this.time.events.repeat(690, 1,this.render_buttons, this);    
     }
-    if(weed.totalCannabis <= 10 && weed.totalCannabis > 0)
+    if(weed.totalCannabis <= 20 && weed.totalCannabis > 0)
     {
-        this.time.events.repeat(220, 1,this.rating_selector, this, 1);    
-        this.time.events.repeat(420, 1,this.render_buttons, this);
+        this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
+        this.time.events.repeat(460, 1,this.render_buttons, this);
     }
     if(weed.totalCannabis <= 0)
     {
-        this.time.events.repeat(420, 1,this.render_buttons, this);
+        this.time.events.repeat(430, 1,this.render_buttons, this);
     }
 
 },
@@ -1010,16 +1140,45 @@ render_buttons: function()
     this.button_left_text.alpha = 0;
     this.button_left_text.scale.x=0.6;
     this.button_left_text.scale.y=0.6;
-    this.add.tween(this.button_left_text).to({alpha: 0.8}, 250, Phaser.Easing.Linear.None, false).start();
+    this.add.tween(this.button_left_text).delay(200).to({alpha: 0.8}, 250, Phaser.Easing.Linear.None, false).start();
+    
 
     this.button_right_text = this.add.sprite(this.world.centerX+155,this.world.centerY+465, 'highscore_text_right');
     this.button_right_text.anchor.setTo(0.5, 0.5);
     this.button_right_text.alpha = 0;
     this.button_right_text.scale.x=0.6;
     this.button_right_text.scale.y=0.6;
-    this.add.tween(this.button_right_text).to({alpha: 0.8}, 250, Phaser.Easing.Linear.None, false).start();
+    this.add.tween(this.button_right_text).delay(200).to({alpha: 0.8}, 250, Phaser.Easing.Linear.None, false).start()
+    .onComplete.add(this.smoke, this);
+    
+   
 
 },
+    
+smoke: function()
+    {
+         this.smoke_audio =this.add.audio('smoke');
+         this.smoke_audio.play('',0,1,false);
+
+        var volume = 0;
+        var i = 0;
+        volume = 0.5;
+            this.scoreScreen_audio = this.add.audio('main_menu_audio_2');
+            this.scoreScreen_audio.play('', 0, 0, true);
+            this.time.events.repeat(200, 1000000, function(){
+                
+                if(i != volume ){
+                    this.scoreScreen_audio.volume = i;
+                    i = i+0.01;
+
+                }
+                if(i >= volume ){
+                    this.scoreScreen_audio.volume = i;
+                    i = volume;
+
+                }
+            }, this);
+    },
 //----------------------------------------------end of render backdrop screen----------------------------------------------------------
 //---------------------------------------------------------------UPDATE-------------------------------------------------------------------------
     update: function()
@@ -1035,7 +1194,9 @@ render_buttons: function()
 
         this.add.tween(this.button_right_text.scale).to({ x :0.7, y :0.7 }, 200, Phaser.Easing.Linear.None, true)
         .onComplete.add(function()
-                {
+                {   
+                    this.postGameShutDown();
+                    this.scoreScreen_audio.stop();
                     this.state.start('MainMenu');
                 }   , this); 
 
@@ -1049,7 +1210,79 @@ render_buttons: function()
         this.add.tween(this.button_left_text.scale).to({ x :0.7, y :0.7 }, 200, Phaser.Easing.Linear.None, true)
         .onComplete.add(function()
                 {
+                    this.postGameShutDown();
+                    this.scoreScreen_audio.stop();
                     this.state.start('PlayGame');
                 }   , this);    
-    }    
-}
+    },
+
+
+
+
+
+    postGameShutDown: function(){
+        
+        if(this.score_image != null){
+            this.score_image.destroy();
+        }
+        if(this.bucket_left != null){
+            this.bucket_left.destroy();
+        }
+        if(this.plus != null){
+            this.plus.destroy();
+        }
+        if(this.bucket_right != null){
+            this.bucket_right.destroy();
+        }
+        if(this.text1 != null){
+            this.text1.destroy();
+        }
+        if(this.temp_sprite != null){
+            this.temp_sprite.destroy();
+        }
+        if(this.text2 != null){
+            this.text2.destroy();
+        }
+        if(this.text3 != null){
+            this.text3.destroy();
+        }
+        if(this.backdrop != null){
+            this.backdrop.destroy();
+        }
+        if(this.button_left != null){
+            this.button_left.destroy();
+        }
+        if(this.button_right != null){
+            this.button_right.destroy();
+        }
+        if(this.button_left_text != null){
+            this.button_left_text.destroy();
+        }
+        if(this.button_right_text != null){
+            this.button_right_text.destroy();
+        }
+        if(this.BG != null){
+            this.BG.destroy();
+        }
+        if(this.preBG != null){
+            this.preBG.destroy();
+        }
+
+        this.BG = null;
+        this.preBG = null;
+        this.score_image = null;
+        this.bucket_left = null;
+        this.plus = null;
+        this.bucket_right = null;
+        this.text1 = null;
+        this.temp_sprite = null;
+        this.text2 = null;
+        this.text3 = null;
+        this.backdrop = null;
+        this.button_left = null;
+        this.button_right = null;
+        this.button_left_text = null;
+        this.button_right_text = null;
+    }
+
+};

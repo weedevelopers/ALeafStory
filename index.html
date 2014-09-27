@@ -10,6 +10,9 @@
     <script src="MainMenu.js"></script>
     <script src="PlayGame.js"></script>
     <script src="PostGame.js"></script>
+    <script src="HighScores.js"></script>
+    <script src="Help.js"></script>
+
 
     
 	<style>
@@ -17,7 +20,7 @@
 			padding: 0;
 			margin: 0;
 			background-color: #FFFFFF;
-            background: url(images/Desktop/Sprites_Backup/original_assets/final_background/edited/countryside_landscape-1920x1200_2.png) no-repeat center center fixed; 
+            background: url(images/Mobile/assets/menu_sprite/countryside_landscape-1920x1200_2.png) no-repeat center center fixed; 
             -webkit-background-size: 100% 100%;
             -moz-background-size: 100% 100%;
             -o-background-size: 100% 100%;
@@ -28,13 +31,16 @@
 <body>
     <div id="Game container"></div>
     <script type="text/javascript">
-        window.onload = function() 
+         window.onload = function() 
     {
                 var game = new Phaser.Game( 675, 1200, Phaser.Auto, "Game container"); 
                 game.state.add('Boot', weed.Boot);
                 game.state.add('MainMenu', weed.MainMenu);                  // add Boot and Preloader to game states
                 game.state.add('PlayGame', weed.PlayGame);
                 game.state.add('PostGame', weed.PostGame);
+                game.state.add('HighScores', weed.HighScores);
+                game.state.add('Help', weed.Help);
+                game.state.add('about', weed.about);
                 game.state.start('Boot');    // Boots the game using the mainmenu.js method() which also calls the preloader()
     }
     

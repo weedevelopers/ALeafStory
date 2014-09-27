@@ -3,7 +3,8 @@ var weed = {
     totalCannabis: 0,
     totalGarbage: 0,
     good_in_garbage: 0,
-    bad_in_garbage: 0
+    bad_in_garbage: 0,
+    sound_mute: null
 };        // creates an object/class of type Bunny Defender
 
 weed.Boot = function(game) {
@@ -23,7 +24,6 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('bubble_blue','images/Mobile/assets/menu_sprite/alternate/help.png');
         this.load.image('bubble_green','images/Mobile/assets/menu_sprite/alternate/play.png');
         this.load.image('bubble_yellow','images/Mobile/assets/menu_sprite/alternate/high_score.png');
-        
         this.load.image('leaves', 'images/Mobile/assets/menu_sprite/falling_leaf.png');
         
         
@@ -41,10 +41,6 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('game_leaf2', 'images/Mobile/assets/game_sprites/final/leaf_2.png');
         this.load.image('game_leaf3', 'images/Mobile/assets/game_sprites/final/leaf_3.png');
         this.load.image('game_leaf4', 'images/Mobile/assets/game_sprites/final/leaf_4.png');
-        this.load.image('game_leaf5', 'images/Mobile/assets/game_sprites/final/leaf_5.png');
-        this.load.image('game_leaf6', 'images/Mobile/assets/game_sprites/final/leaf_6.png');
-        this.load.image('game_leaf7', 'images/Mobile/assets/game_sprites/final/leaf_7.png');
-        this.load.image('game_leaf8', 'images/Mobile/assets/game_sprites/final/leaf_8.png');
         this.load.image('game_leaf_cannabis1', 'images/Mobile/assets/game_sprites/final/cannabis_1.png');
         this.load.image('game_leaf_cannabis2', 'images/Mobile/assets/game_sprites/final/cannabis_2.png');
         this.load.image('empty_bin', 'images/Mobile/assets/game_sprites/final/pot_empty.png');
@@ -55,10 +51,10 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('cannabis_half_bin', 'images/Mobile/assets/game_sprites/final/pot_cannabis_half.png');
         this.load.image('garbage_half_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_half.png');
         this.load.image('garbage_full_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_full.png');
-        this.load.image('ready_screen', 'images/Mobile/assets/game_sprites/final/ready.png');
         
-        this.load.image('ready_text_new', '/images/Mobile/assets/game_sprites/final/ready_text_new.png');
-        this.load.image('go_text_new', '/images/Mobile/assets/game_sprites/final/go_text_new.png');
+            
+        this.load.image('ready_text', '/images/Mobile/assets/game_sprites/final/readytext.png');
+        this.load.image('go_text', '/images/Mobile/assets/game_sprites/final/gotext.png');
         this.load.image('zero', 'images/Mobile/assets/game_sprites/final/zero.png');
         this.load.image('one', 'images/Mobile/assets/game_sprites/final/one.png');
         this.load.image('two', 'images/Mobile/assets/game_sprites/final/two.png');
@@ -91,6 +87,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('text_main_menu', 'images/Mobile/assets/game_sprites/final/main_menu.png');
         this.load.image('pause_pointer_box', 'images/Mobile/assets/game_sprites/final/pointer_box.png');
         this.load.image('pause_backdrop', 'images/Mobile/assets/game_sprites/final/backdrop_glass.png');
+        this.load.image('toke_break_text', 'images/Mobile/assets/game_sprites/final/toke_break.png');
 
         this.load.image('score_sprite','images/Mobile/assets/game_sprites/final/score.png');
         this.load.image('bucket_left','images/Mobile/assets/game_sprites/final/bucket_left.png');
@@ -125,14 +122,53 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('bonus' , 'images/Mobile/assets/game_sprites/final/bonus.png');
         this.load.image('totalscore_screen', 'images/Mobile/assets/game_sprites/final/backdrop_glass.png');
         this.load.image('exclaimation', 'images/Mobile/assets/game_sprites/final/exclaimation.png');
-        this.load.image('joint', 'images/Mobile/assets/game_sprites/final/joint.png');
         this.load.image('smiley_joint', 'images/Mobile/assets/game_sprites/final/stoned_smiley.png');
         this.load.image('button_right', 'images/Mobile/assets/game_sprites/final/button_right.png');
         this.load.image('button_left', 'images/Mobile/assets/game_sprites/final/button_left.png');
         this.load.image('highscore_text_right', 'images/Mobile/assets/game_sprites/final/highscore_text_left.png');
         this.load.image('highscore_text_left', 'images/Mobile/assets/game_sprites/final/highscore_text_right.png');
         this.load.image('plus', 'images/Mobile/assets/game_sprites/final/plus.png');
-        this.load.image('game_over_text', 'images/Mobile/assets/game_sprites/final/game_over_text.png')
+        this.load.image('game_over_text', 'images/Mobile/assets/game_sprites/final/game_over_text.png');
+        
+        this.load.image('best_text', 'images/Mobile/assets/highscore_sprites/best.png'); 
+        this.load.image('trips_text', 'images/Mobile/assets/highscore_sprites/trips.png'); 
+        this.load.image('10_black', 'images/Mobile/assets/highscore_sprites/10.png');
+        this.load.image('1_black', 'images/Mobile/assets/highscore_sprites/1.png');
+        this.load.image('2_black', 'images/Mobile/assets/highscore_sprites/2.png');
+        this.load.image('3_black', 'images/Mobile/assets/highscore_sprites/3.png');
+        this.load.image('4_black', 'images/Mobile/assets/highscore_sprites/4.png');
+        this.load.image('5_black', 'images/Mobile/assets/highscore_sprites/5.png');
+        this.load.image('6_black', 'images/Mobile/assets/highscore_sprites/6.png');
+        this.load.image('7_black', 'images/Mobile/assets/highscore_sprites/7.png');
+        this.load.image('8_black', 'images/Mobile/assets/highscore_sprites/8.png');
+        this.load.image('9_black', 'images/Mobile/assets/highscore_sprites/9.png');
+        this.load.image('10_black', 'images/Mobile/assets/highscore_sprites/10.png');
+        this.load.image('back_arrow', 'images/Mobile/assets/highscore_sprites/back_arrow.png');
+        
+        this.load.image('next_arrow', 'images/Mobile/assets/help_sprites/next_arrow.png');
+        this.load.image('page1', 'images/Mobile/assets/help_sprites/page1.png');
+        this.load.image('page2', 'images/Mobile/assets/help_sprites/page2.png');
+        this.load.image('new_high1', 'images/Mobile/assets/game_sprites/final/new_high1.png');
+        this.load.image('new_high2', 'images/Mobile/assets/game_sprites/final/new_high2.png');
+
+        this.load.image('about_us','images/Mobile/assets/about/about_us.png');
+        
+        //---------------------------------------audio------------------------//
+        this.load.audio('main_menu_audio_1', 'audio/mainmenu_audio_1.mp3');
+        this.load.audio('main_menu_audio_2', 'audio/mainmenu_audio_2.mp3');
+        this.load.audio('gameplay_audio', 'audio/game_play_audio.mp3');
+        this.load.audio('time_stop_power_audio', 'audio/time_stop_power_audio_2.mp3');
+        this.load.audio('ready_go_beep', 'audio/go_beep.mp3');
+        this.load.audio('ready_beep', 'audio/ready_beep.mp3');
+        this.load.audio('two_x_audio', 'audio/two_x_audio.mp3');
+        this.load.audio('minus_four_audio', 'audio/minus_four_audio.mp3');
+        this.load.audio('newbest_audio', 'audio/victory.mp3');
+        this.load.audio('smoke', 'audio/smoke.mp3');
+        this.load.audio('scrolling_numbers','audio/scrolling_numbers.mp3');
+        this.load.audio('scorescreen_audio', 'audio/scorescreen_audio.mp3');
+        this.load.audio('pot1_audio', 'audio/pot1.mp3');
+        this.load.audio('pot2_audio', 'audio/pot2.mp3');
+        this.load.audio('score_bounce_audio', 'audio/bounce.mp3');
         
     },
 
@@ -150,7 +186,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
 		this.scale.setScreenSize(true);  // true will force screen resize no matter what
         this.input.addPointer();
 		
-	    
+	    weed.sound_mute= false;
         this.state.start('MainMenu');     // launches preloader from Boot.js         
     }
 	

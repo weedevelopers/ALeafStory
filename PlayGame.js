@@ -29,7 +29,7 @@ weed.PlayGame = function(game)
     this.renderPowerUpsTimer = 100;
     
 
-
+    this.temp_pause_input_variable = 0;
     this.doubleScoreSeconds = -1;
     this.stopTimerSignal = false;
     this.stopTimerCounter = -1;
@@ -85,7 +85,8 @@ weed.PlayGame.prototype = {
         
         this.physics.startSystem(Phaser.Physics.ARCADE); 
         
-        this.renderReadyScreen();    
+        this.renderReadyScreen();  
+
 
         this.cannabisLeaves.enableBody = true;
         this.garbageLeaves.enableBody = true;
@@ -105,7 +106,7 @@ weed.PlayGame.prototype = {
 
     
 //---------------------------------------------------------UPDATE SECONDS------------------------------------------------------------------//
-     updateSeconds: function()
+    updateSeconds: function()
     {
       
        this.separateDigits(this.secondsElapsed);
@@ -115,7 +116,7 @@ weed.PlayGame.prototype = {
        this.stopTimerCounter--;
        this.renderPowerUpsTimer--;
        
-       console.log(this.speedOfPowerUpSprites);
+       
        this.updateTimerDependentCalls();
 
       
@@ -134,10 +135,31 @@ weed.PlayGame.prototype = {
                                                                 .loop();
 
         }
-        if(this.stopTimerSignal == true && this.stopTimerCounter < 0){
+        if(this.stopTimerSignal == true && this.stopTimerCounter < 0 ){
             this.stopTimerSignal = false;
             this.stopTimerActivated = false;
             this.powerStopTimerAnimation.destroy();
+            if(this.doubleBonusSignal == false){
+                var volume = 0.2;
+                var i = 0;
+                this.time.events.repeat(50, 40, function(){
+                    
+                    console.log('this is running');
+                    if(i < volume && this.playGameAudio != null){
+                        this.playGameAudio.volume = i;
+                        i = i+0.01;
+                        
+
+                    }
+                    if(i >= volume && this.playGameAudio != null){
+                        this.playGameAudio.volume = i;
+                        i = volume;
+                        console.log('current volume = ' +  this.playGameAudio.volume);
+                        
+                    }
+                }, this);
+            }
+
             this.unitsPlaceTween.resume();
             this.tensPlaceTween.resume();
 
@@ -160,17 +182,21 @@ weed.PlayGame.prototype = {
         if(weed.totalCannabis == 5){
           this.renderHalfCannabis();
         }
-        if(weed.totalCannabis >= 20 && this.counter_1_for_updateTimerDependentCalls == 0 ){
+        /*if((weed.totalCannabis+weed.good_in_garbage) >= 20 && this.counter_1_for_updateTimerDependentCalls == 0 ){
             this.renderDragableCannabisRealTime();
             this.renderDragableGarbageRealTime();
             this.counter_1_for_updateTimerDependentCalls ++;
           
-        }
-        if(weed.totalCannabis % 6 == 0 && this.counter_1_for_updateTimerDependentCalls != 0){
+        }*/
+        /*if((weed.totalCannabis+weed.good_in_garbage) % 6 == 0 && this.counter_1_for_updateTimerDependentCalls != 0){
             this.renderDragableCannabisRealTime();
             this.renderDragableGarbageRealTime();
             weed.totalCannabis ++;
             this.counter_1_for_updateTimerDependentCalls ++;
+        }*/
+        if(this.cannabisLeaves.length < this.rnd.integerInRange(1, 3)){
+            this.renderDragableCannabisRealTime();
+            this.renderDragableGarbageRealTime();
         }
         
         
@@ -206,15 +232,16 @@ weed.PlayGame.prototype = {
         var cannabisleaf1, cannabisleaf2;
         this.cannabisLeaves = this.add.group();
         var g,c;
-        g = this.rnd.integerInRange(3, 5);
+        g = this.rnd.integerInRange(1, 2);
+        s = this.rnd.integerInRange(2, 3);
         c = this.rnd.integerInRange(12, 15);
         
             for(var i=0; i<c; i++)
         {
-            cannabisleaf1 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis1');
+            cannabisleaf1 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis1');
             cannabisleaf1.anchor.setTo(0.5, 0.5);
-            cannabisleaf1.scale.x = 0.2;
-            cannabisleaf1.scale.y = 0.2;
+            cannabisleaf1.scale.x = 0.25;
+            cannabisleaf1.scale.y = 0.25;
             this.cannabisLeaves.add(cannabisleaf1, true);
             this.physics.arcade.enable(cannabisleaf1);
             cannabisleaf1.body.collideWorldBounds = true;
@@ -226,10 +253,10 @@ weed.PlayGame.prototype = {
             
          for(var i=0; i<c; i++)
         {
-           cannabisleaf2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150),this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis2');
+           cannabisleaf2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50),this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis2');
             cannabisleaf2.anchor.setTo(0.5, 0.5);
-            cannabisleaf2.scale.x = 0.05;
-            cannabisleaf2.scale.y = 0.05;
+            cannabisleaf2.scale.x = 0.07;
+            cannabisleaf2.scale.y = 0.07;
             this.cannabisLeaves.add(cannabisleaf2, true);
             this.physics.arcade.enable(cannabisleaf2);
             cannabisleaf2.body.collideWorldBounds = true;
@@ -248,10 +275,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-           leaf1 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf1');
+           leaf1 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf1');
             leaf1.anchor.setTo(0.5, 0.5);
-            leaf1.scale.x=0.2;
-            leaf1.scale.y = 0.2;
+            leaf1.scale.x=0.3;
+            leaf1.scale.y = 0.3;
             this.garbageLeaves.add(leaf1, true);
             this.physics.arcade.enable(leaf1);
             leaf1.body.collideWorldBounds = true;
@@ -265,10 +292,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-           leaf2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf2');
+           leaf2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf2');
             leaf2.anchor.setTo(0.5, 0.5);
-            leaf2.scale.x=0.2;
-            leaf2.scale.y = 0.2;
+            leaf2.scale.x=0.32;
+            leaf2.scale.y = 0.32;
             this.garbageLeaves.add(leaf2, true);
             this.physics.arcade.enable(leaf2);
             leaf2.body.collideWorldBounds = true;
@@ -282,10 +309,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-            leaf3 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf3');
+            leaf3 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf3');
             leaf3.anchor.setTo(0.5, 0.5);
-            leaf3.scale.x=0.2;
-            leaf3.scale.y = 0.2;
+            leaf3.scale.x=0.3;
+            leaf3.scale.y = 0.3;
             this.garbageLeaves.add(leaf3, true);
             this.physics.arcade.enable(leaf3);
             leaf3.body.collideWorldBounds = true;
@@ -299,10 +326,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-            leaf4 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf4');
+            leaf4 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf4');
             leaf4.anchor.setTo(0.5, 0.5);
-            leaf4.scale.x=0.2;
-            leaf4.scale.y = 0.2;
+            leaf4.scale.x=0.32;
+            leaf4.scale.y = 0.32;
             this.garbageLeaves.add(leaf4, true);
             this.physics.arcade.enable(leaf4);
             leaf4.body.collideWorldBounds = true;
@@ -392,11 +419,11 @@ weed.PlayGame.prototype = {
         }
        */
         
-        for(var i=0; i<g; i++){
-            seed2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'seed2');
+        for(var i=0; i<s; i++){
+            seed2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'seed1');
             seed2.anchor.setTo(0.5, 0.5);
-            seed2.scale.x=0.1;
-            seed2.scale.y = 0.1;
+            seed2.scale.x=0.185;
+            seed2.scale.y = 0.185;
             this.garbageLeaves.add(seed2, true);
             this.physics.arcade.enable(seed2);
             seed2.body.collideWorldBounds = true;
@@ -407,11 +434,11 @@ weed.PlayGame.prototype = {
         }
        
         
-        for(var i=0; i<g; i++){
-            seed3 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'seed3');
+        for(var i=0; i<s; i++){
+            seed3 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'seed3');
             seed3.anchor.setTo(0.5, 0.5);
-            seed3.scale.x=0.1;
-            seed3.scale.y = 0.1;
+            seed3.scale.x=0.185;
+            seed3.scale.y = 0.185;
             this.garbageLeaves.add(seed3, true);
             this.physics.arcade.enable(seed3);
             seed3.body.collideWorldBounds = true;
@@ -421,6 +448,7 @@ weed.PlayGame.prototype = {
             
         }
         //this.renderReadyScreen();               //--------------------starts the timer when everything is ready
+        console.log("rendered cannabis leaves="+this.cannabisLeaves.length);
         
     },
 
@@ -445,15 +473,15 @@ weed.PlayGame.prototype = {
         var cannabisleaf1, cannabisleaf2;
         //this.cannabisLeaves = this.add.group();
         var c;
-        c = this.rnd.integerInRange(3, 4);
+        c = this.rnd.integerInRange(2, 4);
 
         
             for(var i=0; i<c; i++)
         {
-            cannabisleaf1 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis1');
+            cannabisleaf1 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis1');
             cannabisleaf1.anchor.setTo(0.5, 0.5);
-            cannabisleaf1.scale.x = 0.2;
-            cannabisleaf1.scale.y = 0.2;
+            cannabisleaf1.scale.x = 0.25;
+            cannabisleaf1.scale.y = 0.25;
             this.cannabisLeaves.add(cannabisleaf1, true);
             this.physics.arcade.enable(cannabisleaf1);
             cannabisleaf1.body.collideWorldBounds = true;
@@ -465,10 +493,10 @@ weed.PlayGame.prototype = {
             
          for(var i=0; i<c; i++)
         {
-           cannabisleaf2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150),this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis2');
+           cannabisleaf2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50),this.rnd.integerInRange(300, this.world.height-500), 'game_leaf_cannabis2');
             cannabisleaf2.anchor.setTo(0.5, 0.5);
-            cannabisleaf2.scale.x = 0.05;
-            cannabisleaf2.scale.y = 0.05;
+            cannabisleaf2.scale.x = 0.07;
+            cannabisleaf2.scale.y = 0.07;
             this.cannabisLeaves.add(cannabisleaf2, true);
             this.physics.arcade.enable(cannabisleaf2);
             cannabisleaf2.body.collideWorldBounds = true;
@@ -484,13 +512,14 @@ weed.PlayGame.prototype = {
         var leaf1;
         var leaf2, leaf3, leaf4, leaf5, leaf6, leaf7, leaf8;
         var seed1, seed2, seed3;
-        g = this.rnd.integerInRange(0, 3);
+        g = this.rnd.integerInRange(0, 2);
+        s = this.rnd.integerInRange(1, 2);
         
         for(var i=0; i<g; i++){
-           leaf1 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf1');
+           leaf1 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf1');
             leaf1.anchor.setTo(0.5, 0.5);
-            leaf1.scale.x=0.2;
-            leaf1.scale.y = 0.2;
+            leaf1.scale.x=0.3;
+            leaf1.scale.y = 0.3;
             this.garbageLeaves.add(leaf1, true);
             this.physics.arcade.enable(leaf1);
             leaf1.body.collideWorldBounds = true;
@@ -504,10 +533,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-           leaf2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf2');
+           leaf2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf2');
             leaf2.anchor.setTo(0.5, 0.5);
-            leaf2.scale.x=0.2;
-            leaf2.scale.y =0.2;
+            leaf2.scale.x=0.32;
+            leaf2.scale.y =0.32;
             this.garbageLeaves.add(leaf2, true);
             this.physics.arcade.enable(leaf2);
             leaf2.body.collideWorldBounds = true;
@@ -521,10 +550,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-            leaf3 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf3');
+            leaf3 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf3');
             leaf3.anchor.setTo(0.5, 0.5);
-            leaf3.scale.x=0.2;
-            leaf3.scale.y =0.2;
+            leaf3.scale.x=0.3;
+            leaf3.scale.y =0.3;
             this.garbageLeaves.add(leaf3, true);
             this.physics.arcade.enable(leaf3);
             leaf3.body.collideWorldBounds = true;
@@ -538,10 +567,10 @@ weed.PlayGame.prototype = {
         
         
         for(var i=0; i<g; i++){
-            leaf4 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf4');
+            leaf4 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'game_leaf4');
             leaf4.anchor.setTo(0.5, 0.5);
-            leaf4.scale.x=0.2;
-            leaf4.scale.y = 0.2;
+            leaf4.scale.x=0.32;
+            leaf4.scale.y = 0.32;
             this.garbageLeaves.add(leaf4, true);
             this.physics.arcade.enable(leaf4);
             leaf4.body.collideWorldBounds = true;
@@ -631,11 +660,11 @@ weed.PlayGame.prototype = {
         }*/
        
         
-        for(var i=0; i<g; i++){
-            seed2 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'seed2');
+        for(var i=0; i<s; i++){
+            seed2 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'seed1');
             seed2.anchor.setTo(0.5, 0.5);
-            seed2.scale.x=0.1;
-            seed2.scale.y = 0.1;
+            seed2.scale.x=0.185;
+            seed2.scale.y = 0.185;
             this.garbageLeaves.add(seed2, true);
             this.physics.arcade.enable(seed2);
             seed2.body.collideWorldBounds = true;
@@ -646,11 +675,11 @@ weed.PlayGame.prototype = {
         }
        
         
-        for(var i=0; i<g; i++){
-            seed3 = this.add.sprite(this.rnd.integerInRange(150, this.world.width-150), this.rnd.integerInRange(300, this.world.height-500), 'seed3');
+        for(var i=0; i<s; i++){
+            seed3 = this.add.sprite(this.rnd.integerInRange(50, this.world.width-50), this.rnd.integerInRange(300, this.world.height-500), 'seed3');
             seed3.anchor.setTo(0.5, 0.5);
-            seed3.scale.x=0.1;
-            seed3.scale.y = 0.1;
+            seed3.scale.x=0.185;
+            seed3.scale.y = 0.185;
             this.garbageLeaves.add(seed3, true);
             this.physics.arcade.enable(seed3);
             seed3.body.collideWorldBounds = true;
@@ -725,7 +754,7 @@ weed.PlayGame.prototype = {
 
         this.empty_bin1_collision = this.add.sprite(150, this.world.height - 330, 'empty_bin_collision');
         this.empty_bin1_collision.scale.x = 0.5;
-        this.empty_bin1_collision.scale.y = 0.1;
+        this.empty_bin1_collision.scale.y = 0.19;
         this.empty_bin1_collision.anchor.setTo(0.5, 0.5);
         this.empty_bin1_collision.alpha = 0;
         this.physics.arcade.enable(this.empty_bin1_collision);
@@ -748,7 +777,7 @@ weed.PlayGame.prototype = {
         
         this.empty_bin2_collision = this.add.sprite(this.world.width-150, this.world.height-330, 'empty_bin_collision');
         this.empty_bin2_collision.scale.x = 0.5;
-        this.empty_bin2_collision.scale.y = 0.1;
+        this.empty_bin2_collision.scale.y = 0.19;
         this.empty_bin2_collision.anchor.setTo(0.5, 0.5);
         this.empty_bin2_collision.alpha = 0;
         this.physics.arcade.enable(this.empty_bin2_collision);
@@ -881,7 +910,7 @@ weed.PlayGame.prototype = {
         this.readyScreen.alpha = 0;
         readyScreenTween = this.add.tween(this.readyScreen).delay(600).to({alpha: 0.8}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
             
-            this.readyText = this.add.sprite(this.world.centerX, this.world.centerY-40, 'ready_text_new');
+            this.readyText = this.add.sprite(this.world.centerX, this.world.centerY-40, 'ready_text');
             this.readyText.anchor.setTo(0.5, 0.5);
             this.readyText.scale.x = 0.7;
             this.readyText.scale.y = 0.7;
@@ -904,10 +933,11 @@ weed.PlayGame.prototype = {
                 this.add.tween(this.readyNumber.scale)
                                  .to({x: 0.7, y: 0.7 }, 500, Phaser.Easing.Linear.None, true);
                 
-                t6 = this.add.tween(this.readyNumber)
-                                    .to({alpha: 1}, 500, Phaser.Easing.Linear.None, true)
-                                    .to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-                t6.onComplete.add(function(){ text = '2';
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){ text = '2';
+                                        
                 style = { font: "105px Arial", fill: "#ffffff", align: "center" };
                 this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'two_yellow');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
@@ -917,10 +947,11 @@ weed.PlayGame.prototype = {
                 this.readyNumber.scale.y = 0;
                 this.add.tween(this.readyNumber.scale)
                                  .to({x: 0.7, y: 0.7 }, 500, Phaser.Easing.Linear.None, true);
-                t7 = this.add.tween(this.readyNumber)
-                                    .to({alpha: 1}, 500, Phaser.Easing.Linear.None, true)
-                                    .to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-                t7.onComplete.add(function(){text = '1';
+                
+                this.add.tween(this.readyNumber)
+                                .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){text = '1';
                 style = { font: "105px Arial", fill: "#ffffff", align: "center" };
                 this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'one_yellow');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
@@ -930,12 +961,13 @@ weed.PlayGame.prototype = {
                 this.readyNumber.scale.y = 0;
                 this.add.tween(this.readyNumber.scale)
                                  .to({x: 0.7, y: 0.7 }, 500, Phaser.Easing.Linear.None, true);
-                t8 = this.add.tween(this.readyNumber)
-                                    .to({alpha: 1}, 500, Phaser.Easing.Linear.None, true)
-                                    .to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-                t8.onComplete.add(function(){text = 'GO!';
+                
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){text = 'GO!';
                 style = { font: "105px Arial", fill: "#ffffff", align: "center" };
-                this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'go_text_new');
+                this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'go_text');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
                 this.readyNumber.anchor.setTo(0.5, 0.5);
                 this.readyNumber.alpha = 0;
@@ -943,10 +975,12 @@ weed.PlayGame.prototype = {
                 this.readyNumber.scale.y = 0;
                 this.add.tween(this.readyNumber.scale)
                                  .to({x: 0.7, y: 0.7 }, 500, Phaser.Easing.Linear.None, true);
-                t9 = this.add.tween(this.readyNumber)
-                                    .to({alpha: 1}, 500, Phaser.Easing.Linear.None, true)
-                                    .to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-                t9.onComplete.add(this.removeReadyScreen, this);}, this);}, this);}, this);
+                this.add.audio('ready_beep').play('', 0, 0.5, false);
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.add.tween(this.readyNumber)
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete
+                                    .add(this.removeReadyScreen, this);}, this);}, this);}, this);}, this);}, this);}, this);}, this);
 
                 
             
@@ -956,13 +990,41 @@ weed.PlayGame.prototype = {
 
         removeReadyScreen: function(){
             this.add.tween(this.readyScreen).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.readyText).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
-            this.add.tween(this.readyNumber).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.readyText).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
+            this.add.tween(this.readyNumber).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
             this.renderPauseButton();
+            console.log('ready screen removed');
             this.input.disabled = false;
             this.timer.start();
 
+            
+            this.playGameAudio = this.add.audio('gameplay_audio');
+            this.playGameAudio.play('', 0, 0, true);
+            var volume = 0.2;
+            var i = 0;
+            this.time.events.repeat(50, 40, function(){
+                
+                console.log('this is running');
+                if(i < volume && this.playGameAudio != null){
+                    this.playGameAudio.volume = i;
+                    i = i+0.01;
+                    
+
+                }
+                if(i >= volume && this.playGameAudio != null){
+                    this.playGameAudio.volume = i;
+                    i = volume;
+                    console.log('current volume = ' +  this.playGameAudio.volume);
+                    
+                }
+            }, this);
+            
+
         },
+
+        
+            
+     
 
   
 //-----------------------------------------------------END----------------------------------------------------------------//
@@ -1162,6 +1224,12 @@ weed.PlayGame.prototype = {
             this.doubleScoreSeconds = 5;
             this.doubleScoreActivated = false;
             this.doubleBonusSignal = true;
+            this.doubleBonusAudio = this.add.audio('two_x_audio').play('', 0, 0.7, false);
+            this.playGameAudio.volume = 0.2;
+            if(this.stopTimerAudio != null){
+                this.stopTimerAudio.stop();
+                this.stopTimerAudio = null;
+            }
         }
         obj2.destroy();
 
@@ -1196,8 +1264,8 @@ weed.PlayGame.prototype = {
         this.doubleScoreLeaf = this.add.sprite(this.world.centerX - this.rnd.integerInRange(0, 200), this.world.centerY - this.rnd.integerInRange(0, 400), 'double_score_leaf');
         //this.doubleScoreLeaf.enableBody = true;
         this.doubleScoreLeaf.anchor.setTo(0.5, 0.5);
-        this.doubleScoreLeaf.scale.x = 0.035;
-        this.doubleScoreLeaf.scale.y = 0.035;
+        this.doubleScoreLeaf.scale.x = 0.045;
+        this.doubleScoreLeaf.scale.y = 0.045;
         this.physics.arcade.enable(this.doubleScoreLeaf);
         this.doubleScoreLeaf.body.collideWorldBounds = true;
         this.world.bringToTop(this.doubleScoreLeaf);
@@ -1223,7 +1291,7 @@ weed.PlayGame.prototype = {
                 y_next = this.doubleScoreLeaf.y + 150;
             }
             if(this.doubleScoreLeaf != null && this.doubleScoreLeaf.input.isDragged == false){
-                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: x_next, y: y_next}, this.speedOfPowerUpSprites, Phaser.Easing.Linear.None, true);
+                this.randomMovementDoubleScoreLeaf = this.add.tween(this.doubleScoreLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
                
             }
             if(this.doubleScoreLeaf != null && this.doubleScoreLeaf.input.isDragged == true){
@@ -1285,6 +1353,7 @@ weed.PlayGame.prototype = {
         this.renderMinusFour();
         this.minusFourActivated = false;
         this.renderSadFaceLeft();
+        this.add.audio('minus_four_audio').play('', 0, 0.8, false);
         
         
 
@@ -1319,8 +1388,8 @@ weed.PlayGame.prototype = {
             minusFourLeaf = this.add.sprite(this.world.width, this.world.height, 'minus_four_leaf');
             minusFourLeaf.alpha = 0;
             minusFourLeaf.anchor.setTo(0.5, 0.5);
-            minusFourLeaf.scale.x = 0.1;
-            minusFourLeaf.scale.y = 0.1;
+            minusFourLeaf.scale.x = 0.15;
+            minusFourLeaf.scale.y = 0.15;
             minusFourLeaf.alpha = 0;
             this.physics.arcade.enable(minusFourLeaf);
             minusFourLeaf.body.collideWorldBounds = true;
@@ -1340,8 +1409,8 @@ weed.PlayGame.prototype = {
         for(var i=0; i<1; i++){
             minusFourLeaf = this.add.sprite(this.world.centerX + this.rnd.integerInRange(-200, 200), this.world.centerY - this.rnd.integerInRange(-100, 200), 'minus_four_leaf');
             minusFourLeaf.anchor.setTo(0.5, 0.5);
-            minusFourLeaf.scale.x = 0.135;
-            minusFourLeaf.scale.y = 0.135;
+            minusFourLeaf.scale.x = 0.15;
+            minusFourLeaf.scale.y = 0.15;
             this.physics.arcade.enable(minusFourLeaf);
             minusFourLeaf.body.collideWorldBounds = true;
             
@@ -1382,9 +1451,18 @@ weed.PlayGame.prototype = {
             this.stopTimerSignal = true;
             this.renderHappyFaceLeft();
             this.renderStopTimerPowerActivated();
+            this.playStopTimerAudio();
+            
         }
         obj2.destroy();
         
+    },
+
+
+    playStopTimerAudio: function(){
+        this.playGameAudio.volume = 0;
+        this.stopTimerAudio = this.add.audio('time_stop_power_audio');
+        this.stopTimerAudio.play('', 0, 1, false);
     },
 
     
@@ -1400,8 +1478,8 @@ weed.PlayGame.prototype = {
         this.stopTimerLeaf = this.add.sprite(this.world.centerX - this.rnd.integerInRange(0, 200), this.world.centerY - this.rnd.integerInRange(200, 400), 'stop_timer_leaf');
         //this.stopTimerLeaf.enableBody = true;
         this.stopTimerLeaf.anchor.setTo(0.5, 0.5);
-        this.stopTimerLeaf.scale.x = 0.15;
-        this.stopTimerLeaf.scale.y = 0.15;
+        this.stopTimerLeaf.scale.x = 0.20;
+        this.stopTimerLeaf.scale.y = 0.20;
         this.physics.arcade.enable(this.stopTimerLeaf);
         this.stopTimerLeaf.body.collideWorldBounds = true;
         this.world.bringToTop(this.stopTimerLeaf);
@@ -1426,7 +1504,7 @@ weed.PlayGame.prototype = {
             }
 
             if(this.stopTimerLeaf != null && this.stopTimerLeaf.input.isDragged == false){
-                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: x_next, y: y_next}, this.speedOfPowerUpSprites, Phaser.Easing.Linear.None, true);
+                this.randomMovementStopTimerLeaf = this.add.tween(this.stopTimerLeaf).to({x: x_next, y: y_next}, 300, Phaser.Easing.Linear.None, true);
                 
             }
             if(this.stopTimerLeaf != null && this.stopTimerLeaf.input.isDragged == true){
@@ -1574,11 +1652,11 @@ weed.PlayGame.prototype = {
         this.pauseButton = this.add.sprite(75, 75, 'pause_button');
         this.pauseButton.scale.x = 0.3;
         this.pauseButton.scale.y = 0.3;
-        this.pauseButton.alpha = 0.05;
+        this.pauseButton.alpha = 0.5;
         this.pauseButton.anchor.setTo(0.5, 0.5);
         this.pauseButton.inputEnabled = true;
         this.pauseButton.events.onInputUp.add(function(){
-            this.pauseButton.alpha = 0.8;
+            this.pauseButton.alpha = 0.9;
             this.pauseButtonActivated();
             }, this);
     },
@@ -1592,13 +1670,17 @@ weed.PlayGame.prototype = {
         //this.game.paused = true;
         //this.renderPauseMenu();
         //this.game.input.onDown.add(this.unpauseGame, this);
+        this.temp_pause_input_variable = 0;
+        
     },
 
     renderPauseMenu: function(){
+        
         this.pauseMenuBackdrop = this.add.sprite(this.world.centerX, this.world.centerY+60, 'pause_backdrop');
         this.pauseMenuBackdrop.anchor.setTo(0.5, 0.5);
         this.pauseMenuBackdrop.scale.x = 0;
         this.pauseMenuBackdrop.scale.y = 0;
+        
         /*this.pauseMenuBackdrop = this.add.sprite(this.world.centerX, this.world.centerY, 'ready_screen');
         this.pauseMenuBackdrop.anchor.setTo(0.5, 0.5);
         this.pauseMenuBackdrop.scale.x = 0;
@@ -1607,6 +1689,12 @@ weed.PlayGame.prototype = {
         this.world.bringToTop(this.pauseMenuBackdrop);
 
         this.add.tween(this.pauseMenuBackdrop.scale).to({x: 1.9, y: 2.0}, 100, Phaser.Easing.Linear.None, true).onComplete.add(function(){ //1.75 1.9
+            
+
+            this.pauseMenuTextTokeBreak = this.add.sprite(this.world.centerX, this.world.centerY - 200, 'toke_break_text');
+            this.pauseMenuTextTokeBreak.anchor.setTo(0.5, 0.5);
+            this.pauseMenuTextTokeBreak.scale.setTo(0.8, 0.9);
+            
             this.pauseMenuTextResume = this.add.sprite(this.world.centerX, this.world.centerY-3, 'text_resume');
             this.pauseMenuTextResume.anchor.setTo(0.5, 0.5);
             this.pauseMenuTextResume.scale.x = 0.6;
@@ -1624,22 +1712,32 @@ weed.PlayGame.prototype = {
 
             this.game.paused = true;
             this.game.input.onDown.add(this.unpauseGame, this);
+            
         }, this);
 
     },
 
     unpauseGame: function(event){
-        console.log('x'+event.x);
-        console.log('y'+event.y);
-        var x = event.x;
-        var y = event.y;
         
+        if(this.temp_pause_input_variable == 0){
+            var x = event.x;
+            var y = event.y;
+            
+        }
+        if(this.temp_pause_input_variable != 0){
+            x = 0;
+            y = 0;
+        }
+        /*console.log(x);
+        console.log(y);*/
         if((x <= 457 && x >= 223 && y <= 640 && y >= 560) || (x <= 115 && x >= 30 && y <= 113 && y >= 37)){
             this.pauseMenuTextResume.destroy();
             this.pauseMenuTextRestart.destroy();
             this.pauseMenuTextMainMenu.destroy();
             this.pauseMenuBackdrop.destroy();
+            this.pauseMenuTextTokeBreak.destroy();
             this.game.paused = false;
+            this.temp_pause_input_variable ++;
         }
 
         else if(x <= 457 && x >= 223 && y <= 777 && y >= 712){
@@ -1647,7 +1745,12 @@ weed.PlayGame.prototype = {
             this.pauseMenuTextRestart.destroy();
             this.pauseMenuTextMainMenu.destroy();
             this.pauseMenuBackdrop.destroy();
+            this.pauseMenuTextTokeBreak.destroy();
             this.game.paused = false;
+
+
+            this.playGameAudio.stop();
+            this.playGameAudio = null;
 
             this.BG = null;
             this.preBG = null;
@@ -1691,6 +1794,8 @@ weed.PlayGame.prototype = {
             this.doubleBonusSignal = false;
             this.speedOfPowerUpSprites = 350;
             this.callRenderGameOverScreenOnce = 0;
+            this.temp_pause_input_variable = 0;
+            
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
             weed.good_in_garbage = 0;
@@ -1700,60 +1805,31 @@ weed.PlayGame.prototype = {
         }
 
         else if(x <= 508 && x >= 175 && y <= 928 && y >= 858){
+            
+
             this.pauseMenuTextResume.destroy();
             this.pauseMenuTextRestart.destroy();
             this.pauseMenuTextMainMenu.destroy();
             this.pauseMenuBackdrop.destroy();
+            this.pauseMenuTextTokeBreak.destroy();
             this.game.paused = false;
+            this.playGameShutDown();
+            weed.totalCannabis = 0;
+            weed.totalGarbage = 0;
+            weed.good_in_garbage = 0;
+            weed.bad_in_garbage = 0;
+            this.state.start('MainMenu');
 
-            this.BG = null;
-            this.preBG = null;
-            this.empty_bin1 = null;
-            this.empty_bin2 = null;
-            this.plusOneText = null;
-            this.minusTwoText = null;
-            this.readyScreen = null;
-            this.readyText = null;
-            this.readyNumber = null;
-            this.unitsPlace = null;
-            this.tensPlace = null;
-            this.hundredsPlace = null;
-            
-            this.smilingFaceLeft = null;
-            this.smilingFaceRight = null;
-            this.sadFaceLeft = null;
-            this.sadFaceRight = null;
-            this.happyFace = null;
-
-            
-            this.overmessage;       // game over text
-            this.secondsElapsed = 15;   // counter for incrementing seconds
-            this.timer;             // phaser timer to keep track of seconds elapsed
-            this.t = null;
-            this.t_counter = 0;
-            this.counter_1_for_updateTimerDependentCalls = 0;
-            this.renderPowerUpsTimer = 100;
-            
-
-
-            this.doubleScoreSeconds = -1;
-            this.stopTimerSignal = false;
-            this.stopTimerCounter = -1;
-            this.powerSelector = 0;
-            this.doubleScoreLeaf = null;
-            this.stopTimerLeaf = null;
-            this.doubleScoreActivated = false;
-            this.minusFourActivated = false;
-            this.stopTimerActivated = false;
-            this.doubleBonusSignal = false;
-            this.speedOfPowerUpSprites = 350;
-            this.callRenderGameOverScreenOnce = 0;
+           
+        
+            /*this.playGameShutDown();
             weed.totalCannabis = 0;
             weed.totalGarbage = 0;
             weed.good_in_garbage = 0;
             weed.bad_in_garbage = 0;
 
-            this.state.start('MainMenu');
+
+            this.state.start('MainMenu');*/
         }
         
     },
@@ -1780,50 +1856,23 @@ weed.PlayGame.prototype = {
             this.gameOverText.anchor.setTo(0.5, 0.5);
             this.gameOverText.alpha = 0;
             this.add.tween(this.gameOverText).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
-                this.BG = null;
-                this.preBG = null;
-                this.empty_bin1 = null;
-                this.empty_bin2 = null;
-                this.plusOneText = null;
-                this.minusTwoText = null;
-                this.readyScreen = null;
-                this.readyText = null;
-                this.readyNumber = null;
-                this.unitsPlace = null;
-                this.tensPlace = null;
-                this.hundredsPlace = null;
+                var volume = 0;
+                var i = 0.2;
+                this.time.events.repeat(20, 40, function(){
                 
-                this.smilingFaceLeft = null;
-                this.smilingFaceRight = null;
-                this.sadFaceLeft = null;
-                this.sadFaceRight = null;
-                this.happyFace = null;
+                    if(i != 0 && this.playGameAudio != null){
+                        this.playGameAudio.volume = i;
+                        i = i-0.01;
 
-                
-                this.overmessage;       // game over text
-                this.secondsElapsed = 15;   // counter for incrementing seconds
-                this.timer;             // phaser timer to keep track of seconds elapsed
-                this.t = null;
-                this.t_counter = 0;
-                this.counter_1_for_updateTimerDependentCalls = 0;
-                this.renderPowerUpsTimer = 100;
-                
+                    }
+                    if(i <= 0 && this.playGameAudio != null){
+                        console.log('reached here');
+                        this.playGameAudio.volume = 0;
+                        this.playGameShutDown();
+                        this.state.start('PostGame');
 
-
-                this.doubleScoreSeconds = -1;
-                this.stopTimerSignal = false;
-                this.stopTimerCounter = -1;
-                this.powerSelector = 0;
-                this.doubleScoreLeaf = null;
-                this.stopTimerLeaf = null;
-                this.doubleScoreActivated = false;
-                this.minusFourActivated = false;
-                this.stopTimerActivated = false;
-                this.doubleBonusSignal = false;
-                this.speedOfPowerUpSprites = 350;
-                this.callRenderGameOverScreenOnce = 0;
-                this.state.start('PostGame');
-            }, this);
+                }
+            }, this);}, this);
             //this.state.start('PostGame');
         }, this);
 
@@ -1856,8 +1905,206 @@ weed.PlayGame.prototype = {
         if(weed.totalCannabis > 10000000)
             this.state.start('MainMenu');
         
+    },
+//-----------------------------------------END-----------------------------------------------------------------------//
+
+
+//------------------------------------------------SHUT DOWN FUNCTION------------------------------------------------------------//
+    playGameShutDown: function(){
+        
+        if(this.smilingFaceLeft != null){
+            this.smilingFaceLeft.destroy();
+        }
+        if(this.smilingFaceRight != null){
+            this.smilingFaceRight.destroy();
+        }
+        if(this.sadFaceLeft != null){
+            this.sadFaceLeft.destroy();
+        }
+        if(this.sadFaceRight != null){
+            this.sadFaceRight.destroy();
+        }
+        if(this.happyFaceLeft != null){
+            this.happyFaceLeft.destroy();
+        }
+        if(this.happyFaceRight != null){
+            this.happyFaceRight.destroy();
+        }
+
+        this.smilingFaceLeft = null;
+        this.smilingFaceRight = null;
+        this.sadFaceLeft = null;
+        this.sadFaceRight = null;
+        this.happyFaceLeft = null;
+        this.happyFaceRight = null;
+
+        
+
+        this.readyScreen.destroy();
+        this.readyText.destroy();
+        this.readyNumber.destroy();
+        if(this.unitsPlace != null){
+            this.unitsPlace.destroy();
+        }
+        if(this.unitsPlaceTween != null){
+            this.unitsPlaceTween.onComplete.removeAll();
+            this.unitsPlaceTween.stop();
+        }
+        this.unitsPlaceTween = null;
+        if(this.tensPlaceTween != null){
+            this.tensPlaceTween.onComplete.removeAll();
+            this.tensPlaceTween.stop();
+        }
+        this.tensPlaceTween = null;
+        if(this.tensPlace != null){
+            this.tensPlace.destroy();
+        }
+        if(this.plusOneText != null){
+            this.plusOneText.destroy();
+        }
+        this.plusOneText = null;
+        
+        this.readyScreen = null;
+        this.readyText = null;
+        this.readyNumber = null;
+        this.unitsPlace = null;
+        this.tensPlace = null;
+        this.hundredsPlace = null;
+        
+        
+        
+        this.overmessage;       // game over text
+        this.secondsElapsed = 15;   // counter for incrementing seconds
+        this.timer;             // phaser timer to keep track of seconds elapsed
+        this.t = null;
+        this.t_counter = 0;
+        this.counter_1_for_updateTimerDependentCalls = 0;
+        this.renderPowerUpsTimer = 100;
+        this.temp_pause_input_variable = 0;
+        
+
+        if(this.doubleScoreLeaf != null){
+            this.doubleScoreLeaf.destroy();
+        }
+        if(this.powerDoubleBonusAnimation != null){
+            this.powerDoubleBonusAnimation.destroy();
+        }
+        if(this.randomMovementDoubleScoreLeaf != null){
+            this.randomMovementDoubleScoreLeaf.onComplete.removeAll();
+            this.randomMovementDoubleScoreLeaf.stop();
+        }
+        if(this.minusFourLeaves != null){
+            this.minusFourLeaves.destroy();
+        }
+        if(this.stopTimerLeaf != null){
+            this.stopTimerLeaf.destroy();
+        }
+        if(this.randomMovementStopTimerLeaf != null){
+            this.randomMovementStopTimerLeaf.onComplete.removeAll();
+            this.randomMovementStopTimerLeaf.stop();
+        }
+        if(this.powerStopTimerAnimation != null){
+            this.powerStopTimerAnimation.destroy();
+        }
+        if(this.pauseButton != null){
+            this.pauseButton.destroy();
+        }
+
+        this.pauseButton = null;
+        this.doubleScoreSeconds = -1;
+        this.stopTimerSignal = false;
+        this.stopTimerCounter = -1;
+        this.powerSelector = 0;
+        this.doubleScoreLeaf = null;
+        this.powerDoubleBonusAnimation = null;
+        this.randomMovementDoubleScoreLeaf = null;
+        this.minusFourLeaves = null;
+        this.stopTimerLeaf = null;
+        this.randomMovementStopTimerLeaf = null;
+        this.powerStopTimerAnimation = null;
+        this.doubleScoreActivated = false;
+        this.minusFourActivated = false;
+        this.stopTimerActivated = false;
+        this.doubleBonusSignal = false;
+        this.speedOfPowerUpSprites = 350;
+        this.callRenderGameOverScreenOnce = 0; 
+
+
+        if(this.cannabisLeaves != null){
+            this.cannabisLeaves.destroy();
+        }
+        if(this.garbageLeaves != null){
+            this.garbageLeaves.destroy();
+        }
+        if(this.minusFourLeaves != null){
+            this.minusFourLeaves.destroy();
+        }
+        
+        this.cannabisLeaves = null;
+        this.garbageLeaves = null;
+        this.minusFourLeaves = null;
+
+        if(this.playGameAudio != null){
+            this.playGameAudio.stop();
+            this.playGameAudio = null;
+        }
+
+        if(this.gameOverBackdrop != null){
+            this.gameOverBackdrop.destroy();
+        }
+        if(this.gameOverText != null){
+            this.gameOverText.destroy();
+        }
+        this.gameOverBackdrop = null;
+        this.gameOverText = null;
+
+        if(this.empty_bin1 != null){
+            this.empty_bin1.destroy();
+        }
+        if(this.empty_bin2 != null){
+            this.empty_bin2.destroy();
+        }
+        if(this.empty_bin1_half != null){
+            this.empty_bin1_half.destroy();
+        }
+        if(this.empty_bin1_full != null){
+            this.empty_bin1_full.destroy();
+        }
+        if(this.empty_bin2_half != null){
+            this.empty_bin2_half.destroy();
+        }
+        if(this.empty_bin2_full != null){
+            this.empty_bin2_full.destroy();
+        }
+        if(this.empty_bin1_collision != null){
+            this.empty_bin1_collision.destroy();
+        }
+        if(this.empty_bin2_collision != null){
+            this.empty_bin2_collision.destroy();
+        }
+        this.empty_bin1 = null;
+        this.empty_bin2 = null;
+        this.empty_bin1_collision = null;
+        this.empty_bin1_full = null;
+        this.empty_bin1_half = null;
+        this.empty_bin2_collision = null;
+        this.empty_bin2_full = null;
+        this.empty_bin2_half = null;
+
+        if(this.BG != null){
+            this.BG.destroy();
+        }
+        this.BG = null;
+        if(this.preBG != null){
+            this.preBG.destroy();
+        }    
+        this.preBG = null;
+
+        
     }
+
+//--------------------------------------------------------END------------------------------------------------//
    
 };
 
-//-----------------------------------------END OF CODE-----------------------------------------------------------------------//
+//-------------------------------------------------------------------------END OF CODE-------------------------------------------------//
