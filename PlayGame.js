@@ -194,7 +194,7 @@ weed.PlayGame.prototype = {
             weed.totalCannabis ++;
             this.counter_1_for_updateTimerDependentCalls ++;
         }*/
-        if(this.cannabisLeaves.length < this.rnd.integerInRange(1, 3)){
+        if(this.cannabisLeaves != null && this.cannabisLeaves.length < this.rnd.integerInRange(1, 3)){
             this.renderDragableCannabisRealTime();
             this.renderDragableGarbageRealTime();
         }
