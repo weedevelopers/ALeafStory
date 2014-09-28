@@ -26,7 +26,7 @@ weed.PostGame.prototype = {
     {
             
        
-                
+        //this.input.disbaled = false;       
         this.BG= this.add.sprite(0 ,0 ,'prebackground');
         this.BG.alpha = 1;
         t4 = this.add.tween(this.BG).delay(0).to({alpha: 0}, 800, Phaser.Easing.Linear.None, false).start();

@@ -52,7 +52,8 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('garbage_half_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_half.png');
         this.load.image('garbage_full_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_full.png');
         
-            
+        this.load.image('readyText', 'images/Mobile/assets/game_sprites/final/readyText.png');
+        this.load.image('goText', 'images/Mobile/assets/game_sprites/final/goText.png');    
         this.load.image('ready_text', '/images/Mobile/assets/game_sprites/final/readytext.png');
         this.load.image('go_text', '/images/Mobile/assets/game_sprites/final/gotext.png');
         this.load.image('zero', 'images/Mobile/assets/game_sprites/final/zero.png');

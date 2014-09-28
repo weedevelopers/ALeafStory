@@ -212,7 +212,7 @@ weed.PlayGame.prototype = {
         }
         var temp_random_for_power = this.rnd.integerInRange(3, 4);
         
-        if(this.renderPowerUpsTimer % temp_random_for_power == 0 && this.secondsElapsed != 0){
+        if(this.renderPowerUpsTimer % temp_random_for_power == 0 && this.secondsElapsed > 0){
             this.selectPower();
         }
         
@@ -910,7 +910,7 @@ weed.PlayGame.prototype = {
         this.readyScreen.alpha = 0;
         readyScreenTween = this.add.tween(this.readyScreen).delay(600).to({alpha: 0.8}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
             
-            this.readyText = this.add.sprite(this.world.centerX, this.world.centerY-40, 'ready_text');
+            this.readyText = this.add.sprite(this.world.centerX, this.world.centerY-40, 'readyText');
             this.readyText.anchor.setTo(0.5, 0.5);
             this.readyText.scale.x = 0.7;
             this.readyText.scale.y = 0.7;
@@ -920,10 +920,9 @@ weed.PlayGame.prototype = {
         
       },
     renderReadyScreenNumbers: function(){
-                var text;
+                
                 var t6, t7, t8, t9;
-                text = '3';
-                style = { font: "105px Arial", fill: "#ffffff", align: "center" };
+                
                 this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'three_yellow');
                 
                 this.readyNumber.anchor.setTo(0.5, 0.5);
@@ -936,9 +935,7 @@ weed.PlayGame.prototype = {
                 this.add.tween(this.readyNumber)
                                     .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
                 this.add.tween(this.readyNumber)
-                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){ text = '2';
-                                        
-                style = { font: "105px Arial", fill: "#ffffff", align: "center" };
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){ 
                 this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'two_yellow');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
                 this.readyNumber.anchor.setTo(0.5, 0.5);
@@ -951,8 +948,7 @@ weed.PlayGame.prototype = {
                 this.add.tween(this.readyNumber)
                                 .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
                 this.add.tween(this.readyNumber)
-                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){text = '1';
-                style = { font: "105px Arial", fill: "#ffffff", align: "center" };
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
                 this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'one_yellow');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
                 this.readyNumber.anchor.setTo(0.5, 0.5);
@@ -965,9 +961,8 @@ weed.PlayGame.prototype = {
                 this.add.tween(this.readyNumber)
                                     .to({alpha: 1}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
                 this.add.tween(this.readyNumber)
-                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){text = 'GO!';
-                style = { font: "105px Arial", fill: "#ffffff", align: "center" };
-                this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'go_text');
+                                    .to({alpha: 0}, 400, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+                this.readyNumber = this.add.sprite(this.world.centerX, this.world.centerY + 160, 'goText');
                 //this.readyNumber.setShadow(7, 7, 'rgba(0,0,0,0.5)', 5);
                 this.readyNumber.anchor.setTo(0.5, 0.5);
                 this.readyNumber.alpha = 0;
@@ -1848,6 +1843,7 @@ weed.PlayGame.prototype = {
         this.gameOverBackdrop.scale.x = 0;
         this.gameOverBackdrop.scale.y = 0;
         this.gameOverBackdrop.alpha = 0.95;
+        this.input.disabled = true;
         this.world.bringToTop(this.gameOverBackdrop);
         this.add.tween(this.gameOverBackdrop.scale).to({x: 1.9, y: 2.0}, 500, Phaser.Easing.Linear.None, true).onComplete.add(function(){
             this.gameOverText = this.add.sprite(this.world.centerX, this.world.centerY+60, 'game_over_text');
@@ -1869,6 +1865,7 @@ weed.PlayGame.prototype = {
                         console.log('reached here');
                         this.playGameAudio.volume = 0;
                         this.playGameShutDown();
+                        this.input.disabled = false;
                         this.state.start('PostGame');
 
                 }
@@ -1939,6 +1936,14 @@ weed.PlayGame.prototype = {
         this.happyFaceRight = null;
 
         
+        if(this.stopTimerAudio != null){
+            this.stopTimerAudio.stop();
+            this.stopTimerAudio = null;
+        }
+
+
+
+
 
         this.readyScreen.destroy();
         this.readyText.destroy();
@@ -2099,6 +2104,7 @@ weed.PlayGame.prototype = {
             this.preBG.destroy();
         }    
         this.preBG = null;
+
 
         
     }
