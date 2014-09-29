@@ -89,9 +89,22 @@ weed.PlayGame.prototype = {
 
 
         this.cannabisLeaves.enableBody = true;
-        this.garbageLeaves.enableBody = true;
-        this.minusFourLeaves.enableBody = true;
+        //this.cannabisLeaves.setAll('inputEnabled', 'true');
+        this.cannabisLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnCannabis);
+        this.cannabisLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnCannabis);
 
+        /*this.cannabisLeaves.events.onInputDown.add(function(){
+                
+            }, this);
+        this.cannabisLeaves.events.onInputUp.add(function(){
+            this.add.tween(this.cannabisLeaves.scale).to({x: 0.3, y:  0.3}, 100, Phaser.Easing.Linear.None, true); 
+        }, this);*/
+        this.garbageLeaves.enableBody = true;
+        this.garbageLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnGarbage);
+        this.garbageLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnGarbage);
+        this.minusFourLeaves.enableBody = true;
+        this.minusFourLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnMinusFour);
+        this.minusFourLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnMinusFour);
         this.empty_bin1.enableBody = true;
         this.empty_bin2.enableBody = true;
        
@@ -102,9 +115,90 @@ weed.PlayGame.prototype = {
 //-------------------------------------------------------------END----------------------------------------------------------------//
 
 
+//------------------------------------------------------CLICK DETECTION---------------------------------------------------------------//
 
 
+    inputDownOnCannabis: function(item){
+        //this.add.tween(item.scale).to({x: 0.35, y:  0.35}, 100, Phaser.Easing.Linear.None, true);
+        var x,y;
+        x = item.scale.x;
+        y = item.scale.y;
+        if(x == 0.25 && y == 0.25){
+            item.scale.x = 0.28;
+            item.scale.y = 0.28;
+        }
+        else{
+            item.scale.x = 0.08;
+            item.scale.y = 0.08;
+        }
+    },
     
+    inputUpOnCannabis: function(item){
+        var x,y;
+        x = item.scale.x;
+        y = item.scale.y;
+        if(x == 0.28 && y == 0.28){
+            item.scale.x = 0.25;
+            item.scale.y = 0.25;
+        }
+        else{
+            item.scale.x = 0.07;
+            item.scale.y = 0.07;
+        }
+    },
+
+    inputDownOnGarbage: function(item){
+        var x,y;
+        x = item.scale.x;
+        y = item.scale.y;
+        if(x == 0.3 && y == 0.3){
+            item.scale.x = 0.34;
+            item.scale.y = 0.34;
+        }
+        if(x == 0.32 && y == 0.32){
+            item.scale.x = 0.36;
+            item.scale.y = 0.36;
+        }
+        
+        if(x == 0.185 && y == 0.185){
+            item.scale.x = 0.2;
+            item.scale.y = 0.2;
+        }
+        
+    },
+
+    inputUpOnGarbage: function(item){
+        var x,y;
+        x = item.scale.x;
+        y = item.scale.y;
+        if(x == 0.34 && y == 0.34){
+            item.scale.x = 0.3;
+            item.scale.y = 0.3;
+        }
+        if(x == 0.36 && y == 0.36){
+            item.scale.x = 0.32;
+            item.scale.y = 0.32;
+        }
+        if(x == 0.2 && y == 0.2){
+            item.scale.x = 0.185;
+            item.scale.y = 0.185;
+        }
+    },
+    
+
+    inputDownOnMinusFour: function(item){
+        item.scale.x = 0.17;
+        item.scale.y = 0.17;
+    },
+
+    inputUpOnMinusFour:function(item){
+        item.scale.x = 0.15;
+        item.scale.y = 0.15;
+    },
+
+//-------------------------------------------------------------END----------------------------------------------------------------//
+
+
 //---------------------------------------------------------UPDATE SECONDS------------------------------------------------------------------//
     updateSeconds: function()
     {
@@ -144,7 +238,7 @@ weed.PlayGame.prototype = {
                 var i = 0;
                 this.time.events.repeat(50, 40, function(){
                     
-                    console.log('this is running');
+                    //console.log('this is running');
                     if(i < volume && this.playGameAudio != null){
                         this.playGameAudio.volume = i;
                         i = i+0.01;
@@ -154,7 +248,7 @@ weed.PlayGame.prototype = {
                     if(i >= volume && this.playGameAudio != null){
                         this.playGameAudio.volume = i;
                         i = volume;
-                        console.log('current volume = ' +  this.playGameAudio.volume);
+                        //console.log('current volume = ' +  this.playGameAudio.volume);
                         
                     }
                 }, this);
@@ -179,7 +273,7 @@ weed.PlayGame.prototype = {
 
 
 
-        if(weed.totalCannabis == 5){
+        if(weed.totalCannabis >= 7 && weed.totalCannabis <= 9){
           this.renderHalfCannabis();
         }
         /*if((weed.totalCannabis+weed.good_in_garbage) >= 20 && this.counter_1_for_updateTimerDependentCalls == 0 ){
@@ -197,17 +291,22 @@ weed.PlayGame.prototype = {
         if(this.cannabisLeaves != null && this.cannabisLeaves.length < this.rnd.integerInRange(1, 3)){
             this.renderDragableCannabisRealTime();
             this.renderDragableGarbageRealTime();
+            this.cannabisLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnCannabis);
+            this.cannabisLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnCannabis);
+            this.garbageLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnGarbage);
+            this.garbageLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnGarbage);
+
         }
         
         
-        if(weed.totalCannabis == 10){
+        if(weed.totalCannabis >= 15 && weed.totalCannabis <= 17){
             this.renderFullCannabis();
         }
-        if(weed.bad_in_garbage == 5){
+        if(weed.bad_in_garbage >= 7 && weed.bad_in_garbage <= 9){
             
             this.renderHalfGarbage();
         }
-        if(weed.bad_in_garbage == 10){
+        if(weed.bad_in_garbage >= 15 && weed.bad_in_garbage <= 17){
             this.renderFullGarbage();
         }
         var temp_random_for_power = this.rnd.integerInRange(3, 4);
@@ -248,8 +347,10 @@ weed.PlayGame.prototype = {
             
             cannabisleaf1.inputEnabled = true;
             cannabisleaf1.input.enableDrag();
+            
            
         }
+
             
          for(var i=0; i<c; i++)
         {
@@ -287,7 +388,9 @@ weed.PlayGame.prototype = {
             leaf1.input.enableDrag();
             
             
+            
         }
+        
        
         
         
@@ -322,7 +425,7 @@ weed.PlayGame.prototype = {
             leaf3.input.enableDrag();
             
         }
-       
+        
         
         
         for(var i=0; i<g; i++){
@@ -339,6 +442,7 @@ weed.PlayGame.prototype = {
             leaf4.input.enableDrag();
            
         }
+        
         
         
         /*for(var i=0; i<g; i++){
@@ -432,6 +536,7 @@ weed.PlayGame.prototype = {
             seed2.input.enableDrag();
             
         }
+        
        
         
         for(var i=0; i<s; i++){
@@ -447,8 +552,9 @@ weed.PlayGame.prototype = {
             seed3.input.enableDrag();
             
         }
+        
         //this.renderReadyScreen();               //--------------------starts the timer when everything is ready
-        console.log("rendered cannabis leaves="+this.cannabisLeaves.length);
+        //console.log("rendered cannabis leaves="+this.cannabisLeaves.length);
         
     },
 
@@ -988,7 +1094,7 @@ weed.PlayGame.prototype = {
             this.add.tween(this.readyText).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
             this.add.tween(this.readyNumber).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
             this.renderPauseButton();
-            console.log('ready screen removed');
+            //console.log('ready screen removed');
             this.input.disabled = false;
             this.timer.start();
 
@@ -999,7 +1105,7 @@ weed.PlayGame.prototype = {
             var i = 0;
             this.time.events.repeat(50, 40, function(){
                 
-                console.log('this is running');
+                //console.log('this is running');
                 if(i < volume && this.playGameAudio != null){
                     this.playGameAudio.volume = i;
                     i = i+0.01;
@@ -1009,7 +1115,7 @@ weed.PlayGame.prototype = {
                 if(i >= volume && this.playGameAudio != null){
                     this.playGameAudio.volume = i;
                     i = volume;
-                    console.log('current volume = ' +  this.playGameAudio.volume);
+                    //console.log('current volume = ' +  this.playGameAudio.volume);
                     
                 }
             }, this);
@@ -1185,7 +1291,7 @@ weed.PlayGame.prototype = {
     selectPower: function(){
 
         this.powerSelector = this.rnd.integerInRange(1, 4);
-        //this.powerSelector = 3;
+        //this.powerSelector = 1;
     
         
         switch(this.powerSelector){
@@ -1197,6 +1303,8 @@ weed.PlayGame.prototype = {
             case 2:
                 if(this.minusFourActivated == false){
                     this.renderMinusFourPower();
+                    this.minusFourLeaves.callAll('events.onInputDown.add', 'events.onInputDown', this.inputDownOnMinusFour);
+                    this.minusFourLeaves.callAll('events.onInputUp.add', 'events.onInputUp', this.inputUpOnMinusFour);
                 }
                 break;
             case 3:
@@ -1279,7 +1387,7 @@ weed.PlayGame.prototype = {
             if(this.doubleScoreLeaf == null){
                 x_next = this.rnd.integerInRange(100, 200);
                 y_next = this.rnd.integerInRange(250, 350);
-                console.log('Location of stopTimerLeaf is null');
+                //console.log('Location of stopTimerLeaf is null');
             }
             
             if(y_next <= 125){
@@ -1294,7 +1402,7 @@ weed.PlayGame.prototype = {
                 
             }
             if(this.doubleScoreLeaf == null){
-                console.log('doubleScoreLeaf is null');
+                //console.log('doubleScoreLeaf is null');
             }
             this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 2;
         }, this);
@@ -1305,6 +1413,14 @@ weed.PlayGame.prototype = {
 
         this.doubleScoreLeaf.inputEnabled = true;
         this.doubleScoreLeaf.input.enableDrag();
+        this.doubleScoreLeaf.events.onInputDown.add(function(){
+            this.doubleScoreLeaf.scale.x = 0.055;
+            this.doubleScoreLeaf.scale.y = 0.055;
+        }, this);
+        this.doubleScoreLeaf.events.onInputUp.add(function(){
+            this.doubleScoreLeaf.scale.x = 0.045;
+            this.doubleScoreLeaf.scale.y = 0.045;
+        }, this);
         //if(this.doubleScoreLeaf.events.onDragStart){this.doubleScoreLeaf.body.moves = false;}
         //else if(this.doubleLeafScore.events.onDragStop){this.doubleScoreLeaf.body.moves = true;}
 
@@ -1492,7 +1608,7 @@ weed.PlayGame.prototype = {
             if(this.stopTimerLeaf == null){
                 x_next = this.rnd.integerInRange(100, 200);
                 y_next = this.rnd.integerInRange(250, 350);
-                console.log('Location of stopTimerLeaf is null');
+                //console.log('Location of stopTimerLeaf is null');
             }
             if(y_next <= 125){
                 y_next = this.stopTimerLeaf.y + 150;
@@ -1507,7 +1623,7 @@ weed.PlayGame.prototype = {
                
             }
             if(this.stopTimerLeaf == null){
-                console.log('is null');
+                //console.log('is null');
             }
             this.speedOfPowerUpSprites = this.speedOfPowerUpSprites - 2;
         }, this);
@@ -1519,6 +1635,14 @@ weed.PlayGame.prototype = {
 
         this.stopTimerLeaf.inputEnabled = true;
         this.stopTimerLeaf.input.enableDrag();
+        this.stopTimerLeaf.events.onInputDown.add(function(){
+            this.stopTimerLeaf.scale.x = 0.23;
+            this.stopTimerLeaf.scale.y = 0.23;
+        }, this);
+        this.stopTimerLeaf.events.onInputUp.add(function(){
+            this.stopTimerLeaf.scale.x = 0.2;
+            this.stopTimerLeaf.scale.y = 0.2;
+        }, this);
 
     },
 
@@ -1575,6 +1699,7 @@ weed.PlayGame.prototype = {
         this.physics.arcade.overlap(this.empty_bin2_collision, this.cannabisLeaves, this.cannabis_overlapHandler_bad, null, this);
         this.physics.arcade.overlap(this.empty_bin2_collision, this.garbageLeaves, this.garbage_overlapHandler_bad, null, this);
         this.check();
+        
         
         
     },
@@ -1862,7 +1987,7 @@ weed.PlayGame.prototype = {
 
                     }
                     if(i <= 0 && this.playGameAudio != null){
-                        console.log('reached here');
+                        //console.log('reached here');
                         this.playGameAudio.volume = 0;
                         this.playGameShutDown();
                         this.input.disabled = false;
