@@ -26,7 +26,7 @@ weed.PostGame.prototype = {
     {
             
        
-        //this.input.disbaled = false;       
+                
         this.BG= this.add.sprite(0 ,0 ,'prebackground');
         this.BG.alpha = 1;
         t4 = this.add.tween(this.BG).delay(0).to({alpha: 0}, 800, Phaser.Easing.Linear.None, false).start();
@@ -42,7 +42,7 @@ weed.PostGame.prototype = {
 
             this.score_image= this.add.sprite(this.world.centerX-10,-150 ,'score_sprite');  //-----------------score text
             this.score_image.anchor.setTo(0.5, 1);
-            this.add.tween(this.score_image).to({x: this.world.centerX-10, y: 250}, 1500, Phaser.Easing.Bounce.Out, true) 
+            this.add.tween(this.score_image).to({x: this.world.centerX-10, y: 250}, 2000, Phaser.Easing.Bounce.Out, true) 
             .onComplete.add(this.buckets_zoom_left, this);  
         }, this);
         
@@ -949,7 +949,7 @@ render_totalscore2: function()
 
         var b= 0;
         b=Math.floor(localStorage.getItem('HighScore1'));
-        console.log(b);                          
+                          
          if(this.totalScore == b)
          {
             
@@ -1024,17 +1024,8 @@ render_rating: function()
 
 rating_calculator: function()
 {
-    //var ratio=3.5;
-    var totalGarbage_temp;
-    if(weed.totalGarbage == 0){
-    totalGarbage_temp = 1;
-    }
-    else{
-        totalGarbage_temp = weed.totalGarbage;
-    }
    
-    
-    if(weed.totalCannabis >= 180 )
+    if(weed.totalCannabis > 180 )
     {
         this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
@@ -1045,7 +1036,7 @@ rating_calculator: function()
            
        
     }
-    if(weed.totalCannabis >= 120 && weed.totalCannabis < 180)
+    if(weed.totalCannabis > 120 && weed.totalCannabis <= 180)
     {
         this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
@@ -1053,20 +1044,20 @@ rating_calculator: function()
         this.time.events.repeat(920, 1,this.rating_selector, this, 4);
         this.time.events.repeat(1380, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis >= 60 && weed.totalCannabis < 120)
+    if(weed.totalCannabis > 60 && weed.totalCannabis <= 120)
     {
         this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
         this.time.events.repeat(690, 1,this.rating_selector, this, 3);
         this.time.events.repeat(920, 1,this.render_buttons, this);
     }
-    if(weed.totalCannabis >20 && weed.totalCannabis < 60)
+    if(weed.totalCannabis >20 && weed.totalCannabis <= 60)
     {
         this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(460, 1,this.rating_selector, this, 2); 
         this.time.events.repeat(690, 1,this.render_buttons, this);    
     }
-    if(weed.totalCannabis <= 20 && weed.totalCannabis > 0)
+    if(weed.totalCannabis >0 && weed.totalCannabis <=20)
     {
         this.time.events.repeat(230, 1,this.rating_selector, this, 1);    
         this.time.events.repeat(460, 1,this.render_buttons, this);

@@ -77,11 +77,7 @@ weed.Help.prototype =
     },
     
    
-    nextbutton: function()
-    {
-        this.state.start('MainMenu');
-    },
-      
+         
     back_menu: function()
     {
         this.state.start('MainMenu');

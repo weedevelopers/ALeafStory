@@ -56,7 +56,7 @@ weed.HighScores.prototype =
                     local = Math.floor(localStorage.getItem('HighScore'+'10'));
                     this.highscore_num = local;
                     this.separate_highscore_digits();
-               // this.time.events.repeat(100, this.onesplace, this.display_numbers_onesplace_garbageInBad, this);
+              
     
             }
         
@@ -70,6 +70,7 @@ weed.HighScores.prototype =
     {
 
         var d1, d2, d3; //the number will be d1d2d3 and not d3d2d1
+        
         var str = this.highscore_num.toString();
         
 
@@ -117,7 +118,7 @@ display_highscore: function()
             this.highscore_text.scale.x = 0.3;
             this.highscore_text.scale.y = 0.3;
         
-        if(this.tensplace!=0)
+        if(this.tensplace!=0 || this.hundredsplace!=0)
         {
             this.highscore_text= this.add.sprite(this.world.centerX+175-40,220+(80*this.i) ,this.spritename_green(this.tensplace));
             this.highscore_text.anchor.setTo(0.5, 0.5);

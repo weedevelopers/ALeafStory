@@ -15,8 +15,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
 	
 	preload: function() 
     {                                          
-        this.stage.backgroundColor = '#FFFFFF';
-        
+                
         this.load.image('leaf', 'images/Mobile/assets/menu_sprite/alternate/Cannabis_Leafs_clip_art_medium.png');
         this.load.image('prebackground', 'images/Mobile/assets/menu_sprite/preload.png');
         this.load.image('background', 'images/Mobile/assets/menu_sprite/background_edited_for_desktop.png');
@@ -52,10 +51,9 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('garbage_half_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_half.png');
         this.load.image('garbage_full_bin', 'images/Mobile/assets/game_sprites/final/pot_garbage_full.png');
         
+            
         this.load.image('readyText', 'images/Mobile/assets/game_sprites/final/readyText.png');
         this.load.image('goText', 'images/Mobile/assets/game_sprites/final/goText.png');    
-        this.load.image('ready_text', '/images/Mobile/assets/game_sprites/final/readytext.png');
-        this.load.image('go_text', '/images/Mobile/assets/game_sprites/final/gotext.png');
         this.load.image('zero', 'images/Mobile/assets/game_sprites/final/zero.png');
         this.load.image('one', 'images/Mobile/assets/game_sprites/final/one.png');
         this.load.image('two', 'images/Mobile/assets/game_sprites/final/two.png');
@@ -82,7 +80,6 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('two_x_sprite', 'images/Mobile/assets/game_sprites/final/two_x_sprite.png');
         this.load.image('stop_timer_sprite', 'images/Mobile/assets/game_sprites/final/stop_timer_sprite.png');
         this.load.image('pause_button', 'images/Mobile/assets/game_sprites/final/pause_button.png');
-       // this.load.image('temp_backdrop', 'images/Mobile/assets/game_sprites/backdrop_glass_placement.png');
         this.load.image('text_restart', 'images/Mobile/assets/game_sprites/final/restart.png');
         this.load.image('text_resume', 'images/Mobile/assets/game_sprites/final/resume.png');
         this.load.image('text_main_menu', 'images/Mobile/assets/game_sprites/final/main_menu.png');
@@ -129,7 +126,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('highscore_text_right', 'images/Mobile/assets/game_sprites/final/highscore_text_left.png');
         this.load.image('highscore_text_left', 'images/Mobile/assets/game_sprites/final/highscore_text_right.png');
         this.load.image('plus', 'images/Mobile/assets/game_sprites/final/plus.png');
-        this.load.image('game_over_text', 'images/Mobile/assets/game_sprites/final/game_over_text.png');
+        this.load.image('game_over_text', 'images/Mobile/assets/game_sprites/final/game_over_text.png')
         
         this.load.image('best_text', 'images/Mobile/assets/highscore_sprites/best.png'); 
         this.load.image('trips_text', 'images/Mobile/assets/highscore_sprites/trips.png'); 
@@ -153,6 +150,7 @@ weed.Boot.prototype = {                 // to make methods preload(),create() et
         this.load.image('new_high2', 'images/Mobile/assets/game_sprites/final/new_high2.png');
 
         this.load.image('about_us','images/Mobile/assets/about/about_us.png');
+        this.load.image('more','images/Mobile/assets/about/more_paid.png');
         
         //---------------------------------------audio------------------------//
         this.load.audio('main_menu_audio_1', 'audio/mainmenu_audio_1.mp3');
